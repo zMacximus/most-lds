@@ -1,5 +1,7 @@
 import './ui/global.css'
 import { Metadata } from 'next'
+import { poppins } from 'ui/fonts'
+import {NextUIProvider} from "@nextui-org/react";
  
 export const metadata: Metadata = {
   title: 'HRMIS LMS',
@@ -12,7 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <NextUIProvider>
+        <body className={`${poppins.className} bg-gray-100`}>{children}</body>
+      </NextUIProvider>
     </html>
   )
 }

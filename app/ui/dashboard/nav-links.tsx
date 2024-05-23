@@ -15,7 +15,7 @@ import clsx from 'clsx';
 const links = [
   { name: 'Home', href: '/dashboard', icon: HomeIcon },
   {
-    name: 'Lessons',
+    name: 'Courses',
     href: '/dashboard/lessons',
     icon: AcademicCapIcon,
   },
