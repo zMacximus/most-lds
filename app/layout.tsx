@@ -14,9 +14,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <NextUIProvider>
-        <body className={`${poppins.className} bg-gray-100`}>{children}</body>
-      </NextUIProvider>
+      <body className={`${poppins.className} bg-gray-100`}>
+        <NextUIProvider>
+          {children}
+        </NextUIProvider>
+      </body>
     </html>
   )
 }
