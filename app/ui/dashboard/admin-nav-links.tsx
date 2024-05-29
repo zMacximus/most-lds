@@ -5,6 +5,7 @@ import {
   HomeIcon,
   AcademicCapIcon,
   UserGroupIcon,
+  BriefcaseIcon,
 } from '@heroicons/react/24/outline';
 
 import Link from 'next/link';
@@ -13,17 +14,18 @@ import clsx from 'clsx';
 
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
+const sampleUser = "TheRealHenryCavill"
+
 const links = [
-  { name: 'Home', href: '/dashboard', icon: HomeIcon },
   {
-    name: 'Employees',
-    href: '/dashboard/employees',
+    name: 'Employees List',
+    href: `dashboard/${sampleUser}/employees`,
     icon: UserGroupIcon,
   },
-  // { name: 'Profile', href: '/dashboard/profile', icon: UserIcon },
+  { name: 'Trainings List', href: `dashboard/${sampleUser}/trainings`, icon:  BriefcaseIcon},
 ];
 
-export default function NavLinks() {
+export default function AdminNavLinks() {
   const pathname = usePathname();
   return (
     <>
