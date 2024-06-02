@@ -1,6 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
-import placeholderMan from "../../../public/Placeholder-Man.jpg"
+import placeholderMan from "../../../public/placeholder/Placeholder-Man.jpg"
 
 export default function Profile() {
     return (

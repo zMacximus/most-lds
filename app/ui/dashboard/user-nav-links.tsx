@@ -25,7 +25,7 @@ const sampleUser = "TheRealHenryCavill";
 const links = [
   { name: 'Home', href:`/dashboard/${sampleUser}/home`, icon: HomeIcon },
   { name: 'Trainings', href: `/dashboard/${sampleUser}/trainings`, icon: BriefcaseIcon },
-  { name: 'Profile', href: `/dashboard/${sampleUser}/employees/profile`, icon: UserIcon },
+  { name: 'Profile', href: `/dashboard/${sampleUser}/profile`, icon: UserIcon },
 ];
 
 export default function UserNavLinks() {
@@ -46,7 +46,7 @@ export default function UserNavLinks() {
             className={clsx("flex h-[48px] grow items-center justify-center gap-2 bg-white text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3",
               {
                 'bg-sky-100 text-blue-600': pathname === link.href
-              }
+              } 
             )}
           >
             <LinkIcon className="w-6" />

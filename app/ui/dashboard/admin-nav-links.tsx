@@ -19,10 +19,10 @@ const sampleUser = "TheRealHenryCavill"
 const links = [
   {
     name: 'Employees List',
-    href: `dashboard/${sampleUser}/employees`,
+    href: `/dashboard/${sampleUser}/employees-list`,
     icon: UserGroupIcon,
   },
-  { name: 'Trainings List', href: `dashboard/${sampleUser}/trainings`, icon:  BriefcaseIcon},
+  { name: 'Trainings List', href: `/dashboard/${sampleUser}/trainings-list`, icon:  BriefcaseIcon},
 ];
 
 export default function AdminNavLinks() {
