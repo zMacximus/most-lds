@@ -6,6 +6,7 @@ import {
   AcademicCapIcon,
   UserGroupIcon,
   BriefcaseIcon,
+  CalendarIcon,
 } from '@heroicons/react/24/outline';
 
 import Link from 'next/link';
@@ -23,6 +24,7 @@ const links = [
     icon: UserGroupIcon,
   },
   { name: 'Trainings List', href: `/dashboard/${sampleUser}/trainings-list`, icon:  BriefcaseIcon},
+  { name: 'Scheduler', href: `/dashboard/${sampleUser}/scheduler`, icon:  CalendarIcon},
 ];
 
 export default function AdminNavLinks() {

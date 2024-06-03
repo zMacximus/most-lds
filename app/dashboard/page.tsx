@@ -1,6 +1,10 @@
+import { redirect } from "next/navigation";
+
 export default function Page()
 {
     return (
-        <p>Dashboard</p>
+        <>
+            {redirect("/login")}
+        </>
     )
 }

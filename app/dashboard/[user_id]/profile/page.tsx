@@ -1,9 +1,13 @@
+"use client"
+
 import Image from "next/image"
 import Profile from "ui/profile/profile"
 import SmallCourse from "ui/profile/course-small";
 import ProfileSection from "ui/profile/profile-section";
 import { BriefcaseIcon, BuildingOfficeIcon, CakeIcon, CalendarIcon, HomeIcon, PaintBrushIcon } from "@heroicons/react/24/outline";
 import AboutItem from "ui/profile/about-item";
+import { Scheduler } from "@bitnoi.se/react-scheduler";
+import { SCHEDULER_DATA } from "lib/mock_data";
 
 export default function Page()
 {
@@ -15,6 +19,13 @@ export default function Page()
             <ProfileSection sectionName="About" roundedTop={true}>
                 <div className="flex flex-row flex-wrap justify-center items-center">
                     <AboutItem></AboutItem>
+                </div>
+            </ProfileSection>
+            <ProfileSection sectionName="Schedule">
+                <div className="w-full h-[25rem] border-solid border-2 border-gray-200 m-1 relative overflow-hidden">
+                    <Scheduler data={SCHEDULER_DATA}
+                        config={{zoom: 1, filterButtonState: -1, includeTakenHoursOnWeekendsInDayView: false, maxRecordsPerPage: 5}}>
+                    </Scheduler>
                 </div>
             </ProfileSection>
             <ProfileSection sectionName="Ongoing Courses">
