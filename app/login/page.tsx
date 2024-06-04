@@ -1,6 +1,8 @@
 import { Input, Spacer, Button } from '@nextui-org/react'
 import { authenticate } from '../lib/actions'
 import { GlobeAltIcon, LockClosedIcon, UserIcon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
+import mostLogo from "../../public/logo.png"
  
 export default function Page() {
   return (
@@ -11,8 +13,9 @@ export default function Page() {
     // </form>
     <div className='flex flex-col h-screen justify-center items-center bg-green-600'>
         <div className='flex flex-row justify-center items-center'>
-            <GlobeAltIcon height={'10em'}
-            className='text-gray-50 rotate-[15deg]'></GlobeAltIcon>
+            {/* <GlobeAltIcon height={'10em'}
+            className='text-gray-50 rotate-[15deg]'></GlobeAltIcon> */}
+            <Image src={mostLogo.src} height={1600} width={1600} alt="MOST-BARMM LOGO" quality={100} className="h-[10em] w-[10em]"></Image>
             <p className='text-[10em] text-gray-50 text-center'>HRMIS-TMS</p>
         </div>
         <form action={authenticate}>
