@@ -7,6 +7,7 @@ import {
   UserGroupIcon,
   BriefcaseIcon,
   CalendarIcon,
+  FolderIcon,
 } from '@heroicons/react/24/outline';
 
 import Link from 'next/link';
@@ -18,12 +19,9 @@ import clsx from 'clsx';
 const sampleUser = "TheRealHenryCavill"
 
 const links = [
-  {
-    name: 'Employees List',
-    href: `/dashboard/${sampleUser}/employees-list`,
-    icon: UserGroupIcon,
-  },
+  { name: 'Employees List', href: `/dashboard/${sampleUser}/employees-list`, icon: UserGroupIcon},
   { name: 'Trainings List', href: `/dashboard/${sampleUser}/trainings-list`, icon:  BriefcaseIcon},
+  { name: 'Forms List', href: `/dashboard/${sampleUser}/forms-list`, icon:  FolderIcon},
   { name: 'Scheduler', href: `/dashboard/${sampleUser}/scheduler`, icon:  CalendarIcon},
 ];
 

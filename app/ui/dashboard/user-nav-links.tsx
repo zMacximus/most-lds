@@ -7,6 +7,8 @@ import {
   UserGroupIcon,
   BriefcaseIcon,
   CalculatorIcon,
+  FolderIcon,
+  BuildingLibraryIcon,
 } from '@heroicons/react/24/outline';
 
 import Link from 'next/link';
@@ -25,6 +27,8 @@ const sampleUser = "TheRealHenryCavill";
 const links = [
   { name: 'Home', href:`/dashboard/${sampleUser}/home`, icon: HomeIcon },
   { name: 'Trainings', href: `/dashboard/${sampleUser}/trainings`, icon: BriefcaseIcon },
+  { name: 'Development Plan', href: `/dashboard/${sampleUser}/development-plan`, icon: FolderIcon },
+  { name: 'MOST E-Lib', href: `/dashboard/${sampleUser}/e-library`, icon: BuildingLibraryIcon },
   { name: 'Profile', href: `/dashboard/${sampleUser}/profile`, icon: UserIcon },
 ];
 

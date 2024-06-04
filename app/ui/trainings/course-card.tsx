@@ -17,9 +17,10 @@ export default function CourseCard()
 {
     return (
         <>
-            {DATA.map((data) => {
+            {/* Ideally, index is not auto generated, and should come from the database to separate the courses according to the uid */}
+            {DATA.map((data, index) => {
                 return (
-                    <div className="mt-2 mr-2">
+                    <div className="mt-2 mr-2" key={index}>
                         <Link href={data.course_link}>
                             <div className="flex flex-col max-w-[20vw] border-solid border-2 border-gray-300">
                                 <div className="w-full max-h-[8em] overflow-hidden relative">
