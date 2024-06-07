@@ -1,5 +1,5 @@
 import Image from "next/image"
-import placeholderCourse from '../../../public/placeholder/Placeholder-Man.jpg'
+import placeholderCourse from 'public/placeholder/Placeholder-Man.jpg'
 
 import {CircularProgress} from "@nextui-org/progress";
 

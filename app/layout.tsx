@@ -1,7 +1,7 @@
 import './ui/global.css'
 // import '/react-big-calendar/lib/css/styles.css'
 import { Metadata } from 'next'
-import { poppins } from 'ui/fonts'
+import { poppins } from '@/components/fonts'
 import {NextUIProvider} from "@nextui-org/react";
 import favi from "../public/favicon.ico"
  

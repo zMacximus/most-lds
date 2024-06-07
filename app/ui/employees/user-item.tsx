@@ -1,6 +1,6 @@
 import Image from "next/image"
 import { PencilIcon, TrashIcon, PlusCircleIcon, UserIcon } from "@heroicons/react/24/outline"
-import placeholderMan from "../../../public/placeholder/Placeholder-Man.jpg"
+import placeholderMan from "public/placeholder/Placeholder-Man.jpg"
 import Link from "next/link"
 // import { usePathname } from "next/navigation"
 

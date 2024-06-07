@@ -1,13 +1,14 @@
 "use client"
 
 import Image from "next/image"
-import Profile from "ui/profile/profile"
-import SmallCourse from "ui/profile/course-small";
-import ProfileSection from "ui/profile/profile-section";
+import Profile from "@/components/profile/profile"
+import SmallCourse from "@/components/profile/course-small";
+import ProfileSection from "@/components/profile/profile-section";
 import { BriefcaseIcon, BuildingOfficeIcon, CakeIcon, CalendarIcon, HomeIcon, PaintBrushIcon } from "@heroicons/react/24/outline";
-import AboutItem from "ui/profile/about-item";
-import { Scheduler } from "@bitnoi.se/react-scheduler";
-import { SCHEDULER_DATA } from "lib/mock_data";
+import AboutItem from "@/components/profile/about-item";
+import HomeScheduler from "@/components/home/scheduler";
+// import { Scheduler } from "@bitnoi.se/react-scheduler";
+// import { SCHEDULER_DATA } from "lib/mock_data";
 
 export default function Page()
 {
@@ -23,9 +24,7 @@ export default function Page()
             </ProfileSection>
             <ProfileSection sectionName="Schedule">
                 <div className="w-full h-[25rem] border-solid border-2 border-gray-200 m-1 relative overflow-hidden">
-                    <Scheduler data={SCHEDULER_DATA}
-                        config={{zoom: 1, filterButtonState: -1, includeTakenHoursOnWeekendsInDayView: false, maxRecordsPerPage: 5}}>
-                    </Scheduler>
+                    <HomeScheduler></HomeScheduler>
                 </div>
             </ProfileSection>
             <ProfileSection sectionName="Ongoing Courses">

@@ -16,9 +16,9 @@ export default function Upcoming()
 {
     return (
         <>
-            {DATA.map((data) => {
+            {DATA.map((data, index) => {
                 return (
-                    <div className="flex flex-row justify-center max-w-[full] items-center border-solid border-1 border-gray-300 m-1">
+                    <div className="flex flex-row justify-center max-w-[full] items-center border-solid border-1 border-gray-300 m-1" key={index}>
                         <div className="realtive w-[20vh] overflow-hidden"> 
                             <Image src={data.image} width={0} height={0} alt="" className="w-auto h-full object-fill"></Image>
                         </div>

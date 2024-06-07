@@ -1,7 +1,7 @@
 import { ArrowRightIcon, MagnifyingGlassIcon, PlusCircleIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Button, commonColors, Input, LinkIcon, Pagination, Spacer } from "@nextui-org/react";
 import Link from "next/link";
-import UserItem from "ui/employees/user-item";
+import UserItem from "@/components/employees/user-item";
 
 export default function Page()
 {

@@ -1,6 +1,12 @@
 {
   "compilerOptions": {
-    "baseUrl": "app",
+    "baseUrl": ".",
+    "paths": {
+      "@/lib/*": ["app/lib/*"],
+      "@/components/*": ["app/ui/*"],
+      "@/server/*": ["server/*"],
+      "@/types/*": ["types/*"],
+    },
     "lib": [
       "dom",
       "dom.iterable",
@@ -8,7 +14,7 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": false,
+    "strict": true,
     "noEmit": true,
     "incremental": true,
     "module": "esnext",

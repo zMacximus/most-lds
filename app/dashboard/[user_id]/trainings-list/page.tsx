@@ -1,7 +1,7 @@
 import { ArrowRightIcon, MagnifyingGlassIcon, PlusCircleIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Button, commonColors, Input, LinkIcon, Pagination, Spacer } from "@nextui-org/react";
 import Link from "next/link";
-import CourseItem from "ui/trainings/course-item";
+import CourseItem from "@/components/trainings/course-item";
 
 export default function Page()
 {

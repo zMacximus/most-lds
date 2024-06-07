@@ -1,8 +1,9 @@
 // "use client"
 import placeholderMan from "../../../../public/placeholder/Placeholder-Man.jpg"
-import Upcoming from "ui/home/upcoming";
+import Upcoming from "@/components/home/upcoming";
 import { Avatar, Skeleton } from "@nextui-org/react";
-import HomeScheduler from "ui/home/scheduler";
+import HomeScheduler from "@/components/home/scheduler";
+import WelcomeAvatar from "@/components/home/avatar-welcome";
 
 export default function Page()
 {
@@ -11,8 +12,7 @@ export default function Page()
             <div className="flex flex-row">
                 <div className="flex flex-col border-solid border- border-gray-300 w-full m-1">
                     <div className="flex flex-row justify-start items-center m-1">
-                        <Avatar src={placeholderMan.src} name="Henry" className="mr-2"></Avatar>
-                        <p className="text-[1.5rem]">Welcome back, Henry</p>
+                        <WelcomeAvatar></WelcomeAvatar>
                     </div>
                     <HomeScheduler></HomeScheduler>
                 </div>

@@ -1,5 +1,5 @@
 import { GlobeAltIcon } from '@heroicons/react/24/outline';
-import mostLogo from "../../public/logo.png"
+import mostLogo from "public/logo.png"
 import Image from 'next/image';
 // import { lusitana } from 'ui/fonts';
 

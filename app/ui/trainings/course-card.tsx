@@ -3,7 +3,7 @@ import Image from "next/image";
 import placeholderMan from "../../../public/placeholder/Placeholder-Man.jpg"
 import { CheckCircleIcon, InformationCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import StatusBadge from "ui/status-badge";
+import StatusBadge from "@/components/status-badge";
 
 const DATA = [
 {code: "CVL-001", title: "All About Henry Cavill 01", url: placeholderMan, alt_text: "", instructor: "Henry Cavill", course_link: "", course_info_link: "", status: true},
@@ -37,11 +37,11 @@ export default function CourseCard()
                                         <StatusBadge Open={data.status}></StatusBadge>
                                     </div>
                                     <div className="py-1"></div>
-                                    <div className="max-w-[50%] overflow-clip">{data.title}</div>
+                                    <p className="max-w-[50%] overflow-clip">{data.title}</p>
                                 </div>
                                 <Divider></Divider>
                                 <div className="flex flex-row items-center justify-between p-2">
-                                    <div>{data.instructor}</div>
+                                    <p>{data.instructor}</p>
                                     <Link href={data.course_info_link} className="text-black hover:text-blue-600">
                                         <InformationCircleIcon width={"1.5em"}></InformationCircleIcon>
                                     </Link>
