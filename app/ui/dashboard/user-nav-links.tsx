@@ -1,60 +1,29 @@
-'use client';
+"use client";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import clsx from "clsx";
+import { type CustomLink } from "@/lib/definitions";
+import { icons } from "@/lib/nav-links";
 
-import {
-  UserIcon,
-  HomeIcon,
-  AcademicCapIcon,
-  UserGroupIcon,
-  BriefcaseIcon,
-  CalculatorIcon,
-  FolderIcon,
-  BuildingLibraryIcon,
-} from '@heroicons/react/24/outline';
-
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import clsx from 'clsx';
-import { useRouter } from 'next/navigation';
-import { Button } from '@nextui-org/react';
-// Button
-
-// Map of links to display in the side navigation.
-// Depending on the size of the application, this would be stored in a database.
-const sampleUser = "TheRealHenryCavill";
-
-// FIX THE DYNAMIC ROUTING WHEN U GET BACK
-
-const links = [
-  { name: 'Home', href:`/dashboard/${sampleUser}/home`, icon: HomeIcon },
-  { name: 'Trainings', href: `/dashboard/${sampleUser}/trainings`, icon: BriefcaseIcon },
-  { name: 'Development Plan', href: `/dashboard/${sampleUser}/development-plan`, icon: FolderIcon },
-  { name: 'MOST E-Lib', href: `/dashboard/${sampleUser}/e-library`, icon: BuildingLibraryIcon },
-  { name: 'Profile', href: `/dashboard/${sampleUser}/profile`, icon: UserIcon },
-];
-
-export default function UserNavLinks() {
+export default function UserNavLinks({ links }: { links: CustomLink[] }) {
   const pathname = usePathname();
-  // const router = useRouter();
-  // const test_id = router.query.user_id;
   return (
     <>
       {links.map((link) => {
-        const LinkIcon = link.icon;
+        const LinkIcon = icons[link.icon as keyof typeof icons];
         return (
           <Link
             key={link.name}
-            // onClick={() =>
-            //   router.push(link.href)
-            // }
             href={link.href}
-            className={clsx("flex h-[48px] grow items-center justify-center gap-2 bg-white text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3",
+            className={clsx(
+              "flex h-[48px] grow items-center justify-center gap-2 bg-white text-sm font-medium hover:bg-primary-100 hover:text-primary md:flex-none md:justify-start md:p-2 md:px-3",
               {
-                'bg-sky-100 text-blue-600': pathname === link.href
-              } 
+                "bg-primary-200/50 text-primary": pathname === link.href,
+              }
             )}
           >
-            <LinkIcon className="w-6" />
-            <p className="hidden md:block">{link.name}</p>
+            <LinkIcon className='w-6' />
+            <p className='hidden md:block'>{link.name}</p>
           </Link>
         );
       })}
