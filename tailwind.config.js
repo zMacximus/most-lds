@@ -10,7 +10,7 @@ export const content = [
 export const theme = {
   extend: {
     colors: {
-      white: "#f8fcff",
+      white: "#FFFFFF",
       black: "#1c211f",
       gray: {
         DEFAULT: "#7F7F7F",

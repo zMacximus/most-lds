@@ -12,7 +12,7 @@ export default async function SideNav() {
   const userLink: CustomLink[] = getUserLinks(user_id!);
   const adminLink: CustomLink[] = getAdminLinks(user_id!);
   return (
-    <div className='flex h-full flex-col bg-white'>
+    <div className='flex h-full flex-col bg-white drop-shadow-md'>
       <Link
         className='mb-2 flex h-20 items-end justify-start bg-primary p-4 md:h-40'
         href='/'

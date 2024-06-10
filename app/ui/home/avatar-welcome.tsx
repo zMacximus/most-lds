@@ -16,9 +16,15 @@ async function getName() {
 
 export default function WelcomeAvatar() {
   return (
-    <>
-      <Avatar src={placeholderMan.src} name='Henry' className='mr-2' />
+    // <div className='flex-none'>
+    <div className='flex flex-row justify-start items-center m-3 mr-5 border-solid border- border-black'>
+      <Avatar
+        src={placeholderMan.src}
+        name='Henry'
+        className='mr-2 drop-shadow-sm'
+      />
       <p className='text-[1.5rem]'>Welcome back, {getName()}</p>
-    </>
+    </div>
+    // </div>
   );
 }

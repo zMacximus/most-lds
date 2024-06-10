@@ -1,7 +1,8 @@
 import "./ui/global.css";
 // import '/react-big-calendar/lib/css/styles.css'
+import "@bitnoi.se/react-scheduler/dist/style.css";
 import { Metadata } from "next";
-import { poppins } from "@/components/fonts";
+import { inter, josefin, poppins } from "@/components/fonts";
 import { NextUIProvider } from "@nextui-org/react";
 import favi from "../public/favicon.ico";
 
@@ -18,8 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en'>
-      <body className={`${poppins.className} bg-slate-100/80`}>
+    <html lang='en' className={`${poppins.className} bg-gray-400/30`}>
+      <body>
         <NextUIProvider>{children}</NextUIProvider>
       </body>
     </html>
