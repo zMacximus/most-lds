@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { UrlObject } from "url";
-import { icons } from "./nav-links";
+// import { icons } from "./nav-links";
+
+//Custom Links for sidenav URLs
 
 export interface CustomLink {
   name: string;
@@ -13,3 +15,77 @@ export const customLinkSchema = z.object({
   href: z.union([z.string(), z.object({})]),
   icon: z.any(),
 });
+
+//Custom User
+export interface UserSchema {
+  username: string; //maybe base the profile pic filename of of the username id?
+  password: string;
+  admin: boolean;
+  firstName: string;
+  lastName: string;
+  department: string;
+  title: string;
+  address: string;
+  religion: string;
+  birthDay: Date;
+  joinDate: Date;
+}
+
+export const customUserSchema = z.object({
+  username: z.string(),
+  password: z.string(),
+  admin: z.boolean(),
+  firstName: z.string(),
+  lastName: z.string(),
+  department: z.string(),
+  title: z.string(),
+  address: z.string(),
+  religion: z.string(),
+  birthDay: z.date(),
+  joinDate: z.date(),
+});
+
+export type EmployeeFormInput = {
+  firstName: string;
+  lastName: string;
+  birthDay: Date;
+  address: string;
+  religion: string;
+  department: string;
+  title: string;
+  admin: boolean;
+  joinDate: Date;
+};
+
+export type employeeListData = {
+  username: any;
+  firstName: any;
+  lastName: any;
+  department: any;
+  title: any;
+};
+
+export type TrainingFormInput = {
+  title: string;
+  code: string;
+  modality: "On-Site" | "Online";
+  instructor: string;
+  maxPopulation: number;
+  status: boolean;
+};
+
+export type trainingListData = {
+  id: number;
+  code: string;
+  title: string;
+  modality: "On-Site" | "Online";
+  currentPopulation: number;
+  maxPopulation: number;
+  instructor: string;
+  status: statusBadgeBoolean;
+};
+
+export type statusBadgeBoolean = {
+  open: true;
+  closed: false;
+};

@@ -3,12 +3,14 @@ import mostLogo from "../../public/logo.png";
 import LogoSplash from "public/placeholder/login-splash.jpg";
 import LoginForm from "@/components/login/login-form";
 import { josefin } from "@/components/fonts";
+import { populateTestData } from "@/lib/credentials";
 
 type PageProps = {
   searchParams: { error?: string };
 };
 
 export default function Page({ searchParams }: PageProps) {
+  // populateTestData();  FOR TESTING
   return (
     <div className='flex flex-row'>
       <div className='md:flex flex-1 relative hidden'>

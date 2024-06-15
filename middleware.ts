@@ -1,3 +1,4 @@
+// import { isUserAdmin } from "@/lib/models/User";
 import { NextRequest, NextResponse } from "next/server";
 
 export default function middleware(request: NextRequest) {
@@ -13,8 +14,10 @@ export default function middleware(request: NextRequest) {
   }
 
   if (request.nextUrl.pathname.startsWith("/dashboard")) {
-    if (!request.cookies.has("user_id"))
+    if (!request.cookies.has("user_id")) {
+      request.cookies.set("authenticated", "false");
       return NextResponse.redirect(new URL("/login", request.url)); //user cookie not found
+    }
 
     if (!Boolean(request?.cookies?.get("authenticated")?.value)) {
       //not authenticated
@@ -26,6 +29,15 @@ export default function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }
+
+  // if (request.nextUrl.pathname.startsWith("/admin")) {
+  //   // const isAdmin = isUserAdmin(request?.cookies?.get("user_id")?.value!);
+  //   const isAdmin = false;
+
+  //   if (!isAdmin) {
+  //     return NextResponse.redirect(new URL("/dashboard"));
+  //   }
+  // }
 }
 
 export const config = {

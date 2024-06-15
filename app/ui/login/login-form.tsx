@@ -2,11 +2,8 @@
 
 import { Button, Input, Spacer } from "@nextui-org/react";
 import { LockClosedIcon, UserIcon } from "@heroicons/react/24/outline";
-import Image from "next/image";
-import mostLogo from "../../public/logo.png";
 import { signIn } from "next-auth/react";
 import { ChangeEvent, FormEvent, useState } from "react";
-import LogoSplash from "public/placeholder/login-splash.jpg";
 
 type LoginInput = {
   username: string;
@@ -47,7 +44,7 @@ export default function LoginForm({ searchParams }: PageProps) {
           type='text'
           // autoComplete="off"
           color='primary'
-          required
+          isRequired
           value={inputs.username || ""}
           onChange={handleChange}
           placeholder='username'
@@ -60,7 +57,7 @@ export default function LoginForm({ searchParams }: PageProps) {
           type='password'
           // autoComplete="off"
           color='primary'
-          required
+          isRequired
           value={inputs.password || ""}
           onChange={handleChange}
           placeholder='password'

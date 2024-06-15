@@ -51,7 +51,7 @@ export default function Upcoming() {
           <>
             <div
               className='flex flex-row justify-center max-w-full max-h-full items-center border-solid border- border-gray'
-              key={data.code}
+              key={index}
             >
               <div className='realtive w-[20vh] h-full overflow-hidden'>
                 <Image

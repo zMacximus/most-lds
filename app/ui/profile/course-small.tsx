@@ -41,7 +41,7 @@ export default function SmallCourse() {
           data.completionRate === 100.0 ? "success" : "warning";
         return (
           <>
-            <div className='flex-none w-[50vh]' key={data.code}>
+            <div className='flex-none w-[50vh]' key={index}>
               <div className='flex flex-row items-center w-full h-auto bg-white border-solid border-2 border-gray-400 overflow-hidden mt-2 mr-2'>
                 <Image
                   src={placeholderCourse}

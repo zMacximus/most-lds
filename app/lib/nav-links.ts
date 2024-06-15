@@ -59,22 +59,22 @@ export function getAdminLinks(id: string) {
   const ADMIN_LINKS = [
     {
       name: "Employees List",
-      href: `/dashboard/${id}/employees-list`,
+      href: `/dashboard/${id}/admin/employees-list`,
       icon: "UserGroupIcon",
     },
     {
       name: "Trainings List",
-      href: `/dashboard/${id}/trainings-list`,
+      href: `/dashboard/${id}/admin/trainings-list`,
       icon: "BriefcaseIcon",
     },
     {
       name: "Forms List",
-      href: `/dashboard/${id}/forms-list`,
+      href: `/dashboard/${id}/admin/forms-list`,
       icon: "FolderIcon",
     },
     {
       name: "Scheduler",
-      href: `/dashboard/${id}/scheduler`,
+      href: `/dashboard/${id}/admin/scheduler`,
       icon: "CalendarIcon",
     },
   ];

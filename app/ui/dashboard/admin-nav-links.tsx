@@ -16,9 +16,9 @@ export default function AdminNavLinks({ links }: { links: CustomLink[] }) {
             key={link.name}
             href={link.href}
             className={clsx(
-              "flex h-[48px] grow items-center justify-center gap-2 bg-white text-sm font-medium hover:bg-primary-100 hover:text-primary md:flex-none md:justify-start md:p-2 md:px-3",
+              "flex h-[48px] grow items-center justify-center gap-2 bg-white text-sm font-medium hover:bg-primary-200 hover:text-primary md:flex-none md:justify-start md:p-2 md:px-3",
               {
-                "bg-primary-100 text-primary": pathname === link.href,
+                "bg-primary-200 text-primary": pathname === link.href,
               }
             )}
           >

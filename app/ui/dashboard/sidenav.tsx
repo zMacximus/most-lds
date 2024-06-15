@@ -6,9 +6,13 @@ import LogoutButton from "./logout-button";
 import { getAdminLinks, getUserLinks } from "@/lib/nav-links";
 import { getUserCookie } from "@/server/services/cookies";
 import { CustomLink } from "@/lib/definitions";
+import { findUserData } from "@/lib/models/User";
 
 export default async function SideNav() {
   const user_id = getUserCookie();
+  const isAdmin: Boolean = await findUserData(user_id!).then((data) => {
+    return data?.admin;
+  });
   const userLink: CustomLink[] = getUserLinks(user_id!);
   const adminLink: CustomLink[] = getAdminLinks(user_id!);
   return (
@@ -23,6 +27,7 @@ export default async function SideNav() {
       </Link>
       <div className='flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2 '>
         <SideNavAccordion
+          adminStatus={isAdmin}
           user_links={userLink}
           admin_links={adminLink}
         ></SideNavAccordion>
