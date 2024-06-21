@@ -30,6 +30,7 @@ export default function ModalFormButton({
         isKeyboardDismissDisabled={true}
         isDismissable={false}
         backdrop='blur'
+        scrollBehavior='outside'
       >
         {children}
       </Modal>

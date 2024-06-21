@@ -1,15 +1,17 @@
-"use client"
+"use client";
+
+import HomeScheduler from "@/components/home/scheduler";
+import { Spacer } from "@nextui-org/react";
 
 // import { Scheduler } from "@bitnoi.se/react-scheduler"
 // import { ADMIN_SCHEDULER } from "lib/mock_data"
 
-export default function Page()
-{
-    return (
-        <div className="h-[37rem] border-solid border-2 border-gray-200 m-1 relative overflow-hidden">
-            {/* <Scheduler data={ADMIN_SCHEDULER}
-                config={{zoom: 1, filterButtonState: -1, includeTakenHoursOnWeekendsInDayView: false, maxRecordsPerPage: 5}}>
-            </Scheduler> */}
-        </div>
-    )
+export default function Page() {
+  return (
+    <div className='h-full border-solid rounded-3xl drop-shadow-md border- border-gray-400 relative overflow-hidden bg-white'>
+      <Spacer y={5}></Spacer>
+      <div className='text-[1.5rem] ml-5'>Admin Scheduler</div>
+      <HomeScheduler></HomeScheduler>
+    </div>
+  );
 }

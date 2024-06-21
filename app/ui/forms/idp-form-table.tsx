@@ -1,11 +1,13 @@
 "use server";
 import { Spacer } from "@nextui-org/react";
+import EmployeeFormButton from "../modal-form-button";
 import SearchBar from "../searchbar";
 import CustomPagination from "../pagination";
 import ModalFormButton from "../modal-form-button";
-import NewTrainingForm from "./new-training-form";
+import NewAdminLndForm from "./new-admin-lnd-form";
+import { getUserCookie } from "@/server/services/cookies";
 
-export default async function TrainingTable({
+export default async function IdpFormTable({
   children,
   tableHeaders,
   dbData,
@@ -17,19 +19,21 @@ export default async function TrainingTable({
   currentPage: number;
 }) {
   return (
-    <div className='p-5 flex flex-row w-full h-full bg-white drop-shadow-md rounded-3xl border-dashed border- border-green-600'>
+    <div className='p-5 flex flex-row w-full h-[calc(100vh*.8)] bg-white drop-shadow-md rounded-3xl border-dashed border- border-green-600'>
       <div className='flex flex-col w-full'>
         <div className='flex flex-row'>
           <SearchBar></SearchBar>
           <Spacer x={5}></Spacer>
-          <ModalFormButton buttonName={"Add Training"}>
-            <NewTrainingForm></NewTrainingForm>
-          </ModalFormButton>
+          {/* <ModalFormButton buttonName={"New Form"}>
+            <NewAdminLndForm user_id={getUserCookie()!}></NewAdminLndForm>
+          </ModalFormButton> */}
         </div>
         <div className='py-5 flex flex-row border-solid border- border-black'>
-          {tableHeaders.map((header) => (
+          {tableHeaders.map((header, index) => (
             <div
-              className={`flex flex-1 justify-center items-center border-dashed border- border-red-600`}
+              className={`flex ${
+                index === 0 ? "flex-[1]" : "flex-1"
+              } justify-center items-center border-dashed border- border-red-600`}
             >
               {header}
             </div>

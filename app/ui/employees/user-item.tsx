@@ -14,7 +14,7 @@ export default function UserItem({ dbData }: { dbData: employeeListData[] }) {
         // const [imageSrc, setImageSrc] = useState(
         //   `/api/profile-images/${data.username}.jpg`
         // );
-        const src = `/uploads/profile-images/daPiang.jpg`;
+        const src = placeholderMan;
         return (
           <div
             key={data.username}

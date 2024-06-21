@@ -45,6 +45,36 @@ export const customUserSchema = z.object({
   joinDate: z.date(),
 });
 
+export type AdminFormInput = {
+  // firstName: any;
+  // id: number;
+  employeeName: string;
+  division: string;
+  position: string;
+  employmentStatus: string;
+  officerInCharge: string;
+  titleOfLD: string;
+  dateOfLD: Date;
+  venue: string;
+  numberOfHours: number;
+  serviceProvider: string;
+  modeOfLD: string;
+  level: string;
+  natureOfParticipation: string;
+  typeOfLD: string;
+  sponsored: boolean;
+  withinJobDesc: boolean;
+  recentLD: boolean;
+  previousLD: string | null;
+  previousLDDate: Date | null;
+  previousLDVenue: string | null;
+  prevLDPostFormSubmitted: boolean | null;
+  postLDReEcho: boolean;
+  postFormSubmission: boolean;
+  // formStatus: boolean;
+  submittedBy: string;
+};
+
 export type EmployeeFormInput = {
   firstName: string;
   lastName: string;

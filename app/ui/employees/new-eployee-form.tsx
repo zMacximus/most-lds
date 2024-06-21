@@ -26,7 +26,6 @@ export default function NewEmployeeForm() {
 
   const [birthday, setBirthDay] = useState<DateValue>();
   const [joinDate, setJoinDate] = useState<DateValue>();
-  const [profilePicUrl, setProfilePicUrl] = useState<string | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
 
   const [inputs, setInputs] = useState<EmployeeFormInput>({
@@ -66,14 +65,6 @@ export default function NewEmployeeForm() {
     setInputs((values) => ({ ...values, [name]: checked }));
   };
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const objectUrl = URL.createObjectURL(file);
-      setProfilePicUrl(objectUrl);
-    }
-  };
-
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     const firstNameInitials = inputs.firstName
@@ -92,18 +83,15 @@ export default function NewEmployeeForm() {
 
     formData.append("file", file);
     formData.append("username", username);
-    formData.append("context", "profileImage");
 
-    const response = await fetch("/api/image-upload", {
-      method: "POST",
-      body: formData,
-    });
-    const result = await response.json();
-    console.log(result);
+    //DISABLE API CALLS FOR NOW
 
-    if (result.status === "success") {
-      setProfilePicUrl(result.objectUrl);
-    }
+    // const response = await fetch("/api/image-upload", {
+    //   method: "POST",
+    //   body: formData,
+    // });
+    // const result = await response.json();
+    // console.log(result);
 
     await newEmployeeHandler({ ...inputs });
     router.push(pathName);

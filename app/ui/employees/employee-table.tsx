@@ -18,7 +18,7 @@ export default async function EmployeeTable({
   currentPage: number;
 }) {
   return (
-    <div className='p-5 flex flex-row w-full h-auto bg-white drop-shadow-md rounded-3xl border-dashed border- border-green-600'>
+    <div className='p-5 flex flex-row w-full h-full bg-white drop-shadow-md rounded-3xl border-dashed border- border-green-600'>
       <div className='flex flex-col w-full'>
         <div className='flex flex-row'>
           <SearchBar></SearchBar>

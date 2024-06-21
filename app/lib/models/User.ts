@@ -94,7 +94,63 @@ export async function findUserData(username: string) {
   }
 }
 
+export async function getAllUserData(query?: string) {
+  try {
+    let whereClause = {};
+
+    if (query) {
+      whereClause = {
+        where: {
+          [Op.or]: [
+            { username: { [Op.like]: `%${query}%` } },
+            { firstName: { [Op.like]: `%${query}%` } },
+            { lastName: { [Op.like]: `%${query}%` } },
+            { department: { [Op.like]: `%${query}%` } },
+            { title: { [Op.like]: `%${query}%` } },
+          ],
+        },
+      };
+    }
+    const users = await User.findAll(whereClause)
+      .then((dataArray) => {
+        return dataArray.map((data) => ({
+          username: data.getDataValue("username"),
+          firstName: data.getDataValue("firstName"),
+          lastName: data.getDataValue("lastName"),
+          department: data.getDataValue("department"),
+          title: data.getDataValue("title"),
+        }));
+      })
+      .catch((error) => {
+        console.error("Error fetching data: ", error);
+        return [];
+      });
+
+    return users;
+  } catch (error) {
+    console.error(
+      "Something went wrong trying to access the database: ",
+      error
+    );
+    return [];
+  }
+}
+
 export async function isUserAdmin(username: string) {
   const user = await findUserData(username);
   return user?.admin;
+}
+
+export async function getUserFullName(username: string) {
+  try {
+    const user = await findUserData(username);
+    if (user) {
+      return `${user.firstName} ${user.lastName}`;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.error("Error fetching user full name", err);
+    return null;
+  }
 }

@@ -1,41 +1,32 @@
-import { NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
-import fs from "node:fs/promises";
-import path from "path";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+export const POST = async (req: NextRequest, res: NextResponse) => {
+  const formData = await req.formData();
+  const file = formData.get("file") as File;
+  if (!file)
+    return NextResponse.json({ error: "No files received." }, { status: 400 });
+
   try {
-    const formData = await req.formData();
-    console.log("formdata: " + formData);
-
-    const file = formData.get("file") as File;
-    console.log("file: " + file);
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = new Uint8Array(arrayBuffer);
-
-    const context = formData.get("context");
-    let storedFilePath;
-    if (context === "profileImage") {
-      const filename = formData.get("username");
-      storedFilePath = `./app/api/profile-images/${filename}.jpg`;
-      await fs.writeFile(storedFilePath, buffer);
-    } else {
-      storedFilePath = `./public/uploads/${file.name}`;
-      await fs.writeFile(storedFilePath, buffer);
-    }
-
-    const objectUrl = path.join(
-      context === "profileImage" ? "/api/profile-images" : "/uploads",
-      path.basename(storedFilePath)
-    );
-
-    console.log("Stored file URL: ", objectUrl);
-
-    revalidatePath("/");
-
-    return NextResponse.json({ status: "success", objectUrl });
-  } catch (e) {
-    console.error(e);
-    return NextResponse.json({ status: "fail", error: e });
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = async () => {
+      const base64data = reader.result?.toString().split(",")[1]; // Extract base64 data
+      try {
+        const response = await fetch("http://localhost:4000/upload", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ file: base64data }),
+        });
+        return response.json();
+      } catch (err) {
+        console.log("Error occurred ", err);
+        return NextResponse.json({ Message: "Failed", status: 500 });
+      }
+    };
+  } catch (err) {
+    console.log("Error occurred ", err);
+    return NextResponse.json({ Message: "Failed", status: 500 });
   }
-}
+};
