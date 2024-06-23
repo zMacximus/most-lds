@@ -23,7 +23,9 @@ export default async function Page() {
             <div className='text-[1.5rem] ml-5'>Scheduler</div>
             {/* <Divider /> */}
             {/* <Skeleton> */}
+            {/* <div className='overflow-hidden relative'> */}
             <HomeScheduler></HomeScheduler>
+            {/* </div> */}
             {/* </Skeleton> */}
           </div>
           <div className='flex flex-col h-full max-h-[574px] border-solid border- border-black'>

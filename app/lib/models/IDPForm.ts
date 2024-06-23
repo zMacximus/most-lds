@@ -11,6 +11,10 @@ const IDPForm = db.define(
       unique: "id",
       autoIncrement: true,
     },
+    name: {
+      type: DataTypes.STRING(),
+      allowNull: false,
+    },
     submittedBy: {
       type: DataTypes.STRING(),
       allowNull: false,
@@ -79,6 +83,7 @@ export default IDPForm;
 
 export type IDPFormType = {
   id: number;
+  name: string;
   submittedBy: string;
   position: string;
   yearsInThePosition: number;
@@ -90,29 +95,43 @@ export type IDPFormType = {
   targetScheduleOfCompletion: Date;
   formStatus: number;
   submissionDate: Date;
-};
+  updatedAt: Date;
+}; // Adjust the import according to your project structure
 
-//ALSO UPDATE THIS CHAT
-export async function getAllIDPForms(query?: any): Promise<IDPFormType[]> {
+export async function getUserIDPForms(
+  user: string,
+  query?: string
+): Promise<IDPFormType[]> {
   try {
-    let whereClause = {};
+    // Initialize the where clause
+    const whereClause: any = {
+      submittedBy: { [Op.like]: `%${user}%` },
+    };
 
+    // If query is provided, add date filters
     if (query) {
-      whereClause = {
-        where: {
-          [Op.or]: {
-            submittedBy: { [Op.like]: `%${query}%` },
-            position: { [Op.like]: `%${query}%` },
-            division: { [Op.like]: `%${query}%` },
+      const queryDate = new Date(query);
+      whereClause[Op.or] = [
+        {
+          submissionDate: {
+            [Op.like]: `%${queryDate.toISOString().slice(0, 10)}%`,
           },
         },
-      };
+        {
+          targetScheduleOfCompletion: {
+            [Op.like]: `%${queryDate.toISOString().slice(0, 10)}%`,
+          },
+        },
+      ];
     }
 
-    const idpForms: IDPFormType[] = await IDPForm.findAll(whereClause)
+    const idpForms: IDPFormType[] = await IDPForm.findAll({
+      where: whereClause,
+    })
       .then((dataArray) => {
         return dataArray.map((data) => ({
           id: data.getDataValue("id"),
+          name: data.getDataValue("name"),
           submittedBy: data.getDataValue("submittedBy"),
           position: data.getDataValue("position"),
           yearsInThePosition: data.getDataValue("yearsInThePosition"),
@@ -128,6 +147,62 @@ export async function getAllIDPForms(query?: any): Promise<IDPFormType[]> {
           ),
           formStatus: data.getDataValue("formStatus"),
           submissionDate: data.getDataValue("createdAt"),
+          updatedAt: data.getDataValue("updatedAt"),
+        }));
+      })
+      .catch((error) => {
+        console.error("Error fetching data: ", error);
+        return [];
+      });
+
+    return idpForms;
+  } catch (error) {
+    console.error(
+      "Something went wrong trying to access the database: ",
+      error
+    );
+    return [];
+  }
+}
+
+//ALSO UPDATE THIS CHAT
+export async function getAllIDPForms(query?: any): Promise<IDPFormType[]> {
+  try {
+    let whereClause = {};
+
+    if (query) {
+      whereClause = {
+        where: {
+          [Op.or]: {
+            submittedBy: { [Op.like]: `%${query}%` },
+            submissionDate: { [Op.like]: `%${query}%` },
+            targetScheduleOfCompletion: { [Op.like]: `%${query}%` },
+          },
+        },
+      };
+    }
+
+    const idpForms: IDPFormType[] = await IDPForm.findAll(whereClause)
+      .then((dataArray) => {
+        return dataArray.map((data) => ({
+          id: data.getDataValue("id"),
+          name: data.getDataValue("name"),
+          submittedBy: data.getDataValue("submittedBy"),
+          position: data.getDataValue("position"),
+          yearsInThePosition: data.getDataValue("yearsInThePosition"),
+          division: data.getDataValue("division"),
+          objectives: data.getDataValue("objectives"),
+          areasOfStrength: data.getDataValue("areasOfStrength"),
+          areasOfDevelopment: data.getDataValue("areasOfDevelopment"),
+          targetCompetencyTraining: data.getDataValue(
+            "targetCompetencyTraining"
+          ),
+          targetScheduleOfCompletion: data.getDataValue(
+            "targetScheduleOfCompletion"
+          ),
+          formStatus: data.getDataValue("formStatus"),
+          submissionDate: data.getDataValue("createdAt"),
+          updatedAt: data.getDataValue("updatedAt"),
         }));
       })
       .catch((error) => {

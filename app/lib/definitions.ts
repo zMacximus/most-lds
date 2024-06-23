@@ -75,14 +75,33 @@ export type AdminFormInput = {
   submittedBy: string;
 };
 
+export type IDPFormInput = {
+  name: string;
+  submittedBy: string;
+  position: string;
+  yearsInThePosition: number;
+  division: string;
+  objectives?: string | null;
+  areasOfStrength?: string | null;
+  areasOfDevelopment?: string | null;
+  targetCompetencyTraining?: string | null;
+  targetScheduleOfCompletion: Date;
+  formStatus?: number;
+};
+
 export type EmployeeFormInput = {
   firstName: string;
   lastName: string;
+  email: string;
+  // password?: string;
   birthDay: Date;
   address: string;
   religion: string;
   department: string;
   title: string;
+  employmentStatus: string;
+  phoneNumber: string;
+  maritalStatus: string;
   admin: boolean;
   joinDate: Date;
 };

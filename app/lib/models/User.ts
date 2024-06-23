@@ -10,6 +10,11 @@ const User = db.define(
       allowNull: false,
       unique: "username",
     },
+    email: {
+      type: DataTypes.STRING(),
+      allowNull: false,
+      unique: "email",
+    },
     password: {
       type: DataTypes.STRING(),
       allowNull: false,
@@ -35,6 +40,18 @@ const User = db.define(
       type: DataTypes.STRING(),
       allowNull: false,
     },
+    employmentStatus: {
+      type: DataTypes.STRING(),
+      allowNull: false,
+    },
+    phoneNumber: {
+      type: DataTypes.STRING(),
+      allowNull: false,
+    },
+    maritalStatus: {
+      type: DataTypes.STRING(),
+      allowNull: false,
+    },
     address: {
       type: DataTypes.STRING(),
       allowNull: false,
@@ -45,56 +62,73 @@ const User = db.define(
     },
     birthDay: {
       type: DataTypes.DATEONLY(),
-      // allowNull: false,
+      allowNull: false,
     },
     joinDate: {
       type: DataTypes.DATEONLY(),
-      // allowNull: false,
+      allowNull: false,
     },
   },
   { freezeTableName: true }
 );
 
+User.sync();
+
 export default User;
 
 export type UserType = {
   username: string;
-  password: string;
+  email: string;
+  password?: string;
   admin: boolean;
   firstName: string;
   lastName: string;
   department: string;
   title: string;
+  employmentStatus: string;
+  phoneNumber: string;
+  maritalStatus: string;
   address: string;
   religion: string;
-  birthDay?: string; // Optional because it might not be present
-  joinDate?: string; // Optional because it might not be present
+  birthDay: string;
+  joinDate: string;
 };
 
-export async function findUserData(username: string) {
+export async function findUserData(username: string): Promise<UserType | null> {
   try {
-    db;
-    const user = await User.findOne({
+    const data = await User.findOne({
       where: {
         username: {
           [Op.like]: `%${username}%`,
         },
       },
+    }).then((data) => {
+      return {
+        username: data?.getDataValue("username"),
+        email: data?.getDataValue("email"),
+        firstName: data?.getDataValue("firstName"),
+        lastName: data?.getDataValue("lastName"),
+        department: data?.getDataValue("department"),
+        title: data?.getDataValue("title"),
+        employmentStatus: data?.getDataValue("employmentStatus"),
+        phoneNumber: data?.getDataValue("phoneNumber"),
+        maritalStatus: data?.getDataValue("maritalStatus"),
+        address: data?.getDataValue("address"),
+        religion: data?.getDataValue("religion"),
+        birthDay: data?.getDataValue("birthDay"),
+        joinDate: data?.getDataValue("joinDate"),
+        admin: data?.getDataValue("admin"),
+      };
     });
 
-    return {
-      username: user?.getDataValue("username"),
-      firstName: user?.getDataValue("firstName"),
-      lastName: user?.getDataValue("lastName"),
-      admin: user?.getDataValue("admin"),
-    };
+    return data;
   } catch (err) {
     console.error("INVALID CREDS", err);
     return null;
   }
 }
 
-export async function getAllUserData(query?: string) {
+export async function getAllUserData(query?: string): Promise<UserType[]> {
   try {
     let whereClause = {};
 
@@ -111,20 +145,24 @@ export async function getAllUserData(query?: string) {
         },
       };
     }
-    const users = await User.findAll(whereClause)
-      .then((dataArray) => {
-        return dataArray.map((data) => ({
-          username: data.getDataValue("username"),
-          firstName: data.getDataValue("firstName"),
-          lastName: data.getDataValue("lastName"),
-          department: data.getDataValue("department"),
-          title: data.getDataValue("title"),
-        }));
-      })
-      .catch((error) => {
-        console.error("Error fetching data: ", error);
-        return [];
-      });
+    const dataArray = await User.findAll(whereClause);
+
+    const users: UserType[] = dataArray.map((data) => ({
+      username: data.getDataValue("username"),
+      email: data.getDataValue("email"),
+      firstName: data.getDataValue("firstName"),
+      lastName: data.getDataValue("lastName"),
+      department: data.getDataValue("department"),
+      title: data.getDataValue("title"),
+      employmentStatus: data.getDataValue("employmentStatus"),
+      phoneNumber: data.getDataValue("phoneNumber"),
+      maritalStatus: data.getDataValue("maritalStatus"),
+      address: data.getDataValue("address"),
+      religion: data.getDataValue("religion"),
+      birthDay: data.getDataValue("birthDay"),
+      joinDate: data.getDataValue("joinDate"),
+      admin: data.getDataValue("admin"),
+    }));
 
     return users;
   } catch (error) {
@@ -136,12 +174,14 @@ export async function getAllUserData(query?: string) {
   }
 }
 
-export async function isUserAdmin(username: string) {
+export async function isUserAdmin(username: string): Promise<boolean | null> {
   const user = await findUserData(username);
-  return user?.admin;
+  return user?.admin ?? null;
 }
 
-export async function getUserFullName(username: string) {
+export async function getUserFullName(
+  username: string
+): Promise<string | null> {
   try {
     const user = await findUserData(username);
     if (user) {

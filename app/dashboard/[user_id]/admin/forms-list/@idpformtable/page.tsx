@@ -24,19 +24,17 @@ export default async function Page({
   const headers = ["Submitted by", "Submitted on", "Status", "Action"];
   return (
     <>
-      {dbData.length - 1 > 0 ? (
-        <IdpFormTable
-          tableHeaders={headers}
-          dbData={dbData}
-          currentPage={currentPage}
-        >
-          <IdpFormItem
-            dbData={getDataForPage(currentPage, dbData)}
-          ></IdpFormItem>
-        </IdpFormTable>
-      ) : (
+      {/* {dbData.length > 0 ? ( */}
+      <IdpFormTable
+        tableHeaders={headers}
+        dbData={dbData}
+        currentPage={currentPage}
+      >
+        <IdpFormItem dbData={getDataForPage(currentPage, dbData)}></IdpFormItem>
+      </IdpFormTable>
+      {/* ) : (
         <p>LOAD SOME DATA</p>
-      )}
+      )} */}
     </>
   );
 }

@@ -1,6 +1,9 @@
 "use client";
 import { EmployeeFormInput } from "@/lib/definitions";
-import { newEmployeeHandler } from "@/server/services/employeeFormHandler";
+import {
+  newEmployeeHandler,
+  validateFormInput,
+} from "@/server/services/employeeFormHandler";
 import { getLocalTimeZone } from "@internationalized/date";
 import {
   Button,
@@ -31,11 +34,15 @@ export default function NewEmployeeForm() {
   const [inputs, setInputs] = useState<EmployeeFormInput>({
     firstName: "",
     lastName: "",
+    email: "", // New field
     birthDay: birthday?.toDate(getLocalTimeZone())!,
     address: "",
     religion: "",
     department: "",
     title: "",
+    employmentStatus: "", // New field
+    phoneNumber: "", // New field
+    maritalStatus: "", // New field
     admin: false,
     joinDate: joinDate?.toDate(getLocalTimeZone())!,
   });
@@ -46,9 +53,7 @@ export default function NewEmployeeForm() {
     setInputs((values) => ({ ...values, [name]: value }));
   };
 
-  const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const name = event.target.name;
-    const value = event.target.value;
+  const handleSelectChange = (name: string, value: string) => {
     setInputs((values) => ({ ...values, [name]: value }));
   };
 
@@ -65,7 +70,7 @@ export default function NewEmployeeForm() {
     setInputs((values) => ({ ...values, [name]: checked }));
   };
 
-  const handleSubmit = async (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent, onClose: () => void) => {
     event.preventDefault();
     const firstNameInitials = inputs.firstName
       .split(/[\s-]+/) // Split by spaces or hyphens
@@ -84,17 +89,15 @@ export default function NewEmployeeForm() {
     formData.append("file", file);
     formData.append("username", username);
 
-    //DISABLE API CALLS FOR NOW
+    if (await validateFormInput({ ...inputs })) {
+      //   setIsFormValid(true);
+      await newEmployeeHandler({ ...inputs });
+      onClose();
+      router.push(pathName);
+    }
 
-    // const response = await fetch("/api/image-upload", {
-    //   method: "POST",
-    //   body: formData,
-    // });
-    // const result = await response.json();
-    // console.log(result);
-
-    await newEmployeeHandler({ ...inputs });
-    router.push(pathName);
+    // await newEmployeeHandler({ ...inputs });
+    // router.push(pathName);
   };
 
   return (
@@ -103,7 +106,7 @@ export default function NewEmployeeForm() {
         <>
           <ModalHeader>New User Form</ModalHeader>
           <ModalBody>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={(e) => handleSubmit(e, onClose)}>
               <div className='flex flex-row justify-center items-center'>
                 <div className='flex flex-col flex-shrink border-soli border- border-black'>
                   <label className='mb-4 text-sm'>Profile Picture</label>
@@ -119,7 +122,7 @@ export default function NewEmployeeForm() {
                   id='firstName'
                   name='firstName'
                   isRequired
-                  value={inputs.firstName || ""}
+                  value={inputs.firstName}
                   onChange={handleInputChange}
                   placeholder='ex. Juan'
                   label='First Name'
@@ -131,12 +134,38 @@ export default function NewEmployeeForm() {
                   id='lastName'
                   name='lastName'
                   isRequired
-                  value={inputs.lastName || ""}
+                  value={inputs.lastName}
                   onChange={handleInputChange}
                   placeholder='ex. de la Cruz'
                   label='Last Name'
                   size='md'
                   labelPlacement='outside'
+                ></Input>
+              </div>
+              <div className='flex flex-row justify-center items-center mt-5'>
+                <Input
+                  id='email'
+                  name='email'
+                  isRequired
+                  value={inputs.email}
+                  onChange={handleInputChange}
+                  placeholder='ex. juandelacruz123@gmail.com'
+                  label='Email'
+                  size='md'
+                  labelPlacement='outside'
+                ></Input>
+                <Spacer x={4}></Spacer>
+                <Input
+                  id='phoneNumber'
+                  name='phoneNumber'
+                  isRequired
+                  value={inputs.phoneNumber}
+                  onChange={handleInputChange}
+                  placeholder='ex. 915-xxx-xxxx'
+                  label='Phone Number'
+                  size='md'
+                  labelPlacement='outside'
+                  startContent={<p className='text-gray-700'>+63</p>}
                 ></Input>
               </div>
               <div className='flex flex-row justify-center items-center mt-5'>
@@ -159,7 +188,7 @@ export default function NewEmployeeForm() {
                   id='address'
                   name='address'
                   isRequired
-                  value={inputs.address || ""}
+                  value={inputs.address}
                   onChange={handleInputChange}
                   placeholder='ex. 123 Di Makita St., Not Real City'
                   label='Address'
@@ -176,7 +205,10 @@ export default function NewEmployeeForm() {
                   size='md'
                   labelPlacement='outside'
                   placeholder='ex. Operations'
-                  onChange={handleSelectChange}
+                  value={inputs.department}
+                  onChange={(value) =>
+                    handleSelectChange("department", value.target.value)
+                  }
                 >
                   <SelectItem key={"Admin"}>Admin</SelectItem>
                   <SelectItem key={"Finance"}>Finance</SelectItem>
@@ -189,13 +221,53 @@ export default function NewEmployeeForm() {
                   id='title'
                   name='title'
                   isRequired
-                  value={inputs.title || ""}
+                  value={inputs.title}
                   onChange={handleInputChange}
                   placeholder='ex. Supervisor'
                   label='Title'
                   size='md'
                   labelPlacement='outside'
                 ></Input>
+                <Spacer x={4}></Spacer>
+                <Select
+                  id='employmentStatus'
+                  name='employmentStatus'
+                  isRequired
+                  label='Employment Status'
+                  size='md'
+                  labelPlacement='outside'
+                  placeholder='ex. Permanent'
+                  value={inputs.employmentStatus}
+                  onChange={(value) =>
+                    handleSelectChange("employmentStatus", value.target.value)
+                  }
+                >
+                  <SelectItem key={"Intern"}>Intern</SelectItem>
+                  <SelectItem key={"Part-time"}>Part-time</SelectItem>
+                  <SelectItem key={"Permanent"}>Permanent</SelectItem>
+                  <SelectItem key={"Contractual"}>Contractual</SelectItem>
+                  <SelectItem key={"Voluntary"}>Voluntary</SelectItem>
+                </Select>
+              </div>
+              <div className='flex flex-row justify-start items-center mt-5'>
+                <Select
+                  id='maritalStatus'
+                  name='maritalStatus'
+                  isRequired
+                  label='Marital Status'
+                  size='md'
+                  labelPlacement='outside'
+                  placeholder='ex. Married'
+                  value={inputs.maritalStatus}
+                  onChange={(value) =>
+                    handleSelectChange("maritalStatus", value.target.value)
+                  }
+                >
+                  <SelectItem key={"Single"}>Single</SelectItem>
+                  <SelectItem key={"Taken"}>Taken</SelectItem>
+                  <SelectItem key={"Married"}>Married</SelectItem>
+                  <SelectItem key={"Separated"}>Separated</SelectItem>
+                </Select>
                 <Spacer x={4}></Spacer>
                 <Select
                   id='religion'
@@ -205,15 +277,17 @@ export default function NewEmployeeForm() {
                   size='md'
                   labelPlacement='outside'
                   placeholder='ex. Islam'
-                  onChange={handleSelectChange}
+                  value={inputs.religion}
+                  onChange={(value) =>
+                    handleSelectChange("religion", value.target.value)
+                  }
                 >
                   <SelectItem key={"Islam"}>Islam</SelectItem>
                   <SelectItem key={"Roman Catholic"}>Roman Catholic</SelectItem>
                   <SelectItem key={"Christianity"}>Christianity</SelectItem>
                   <SelectItem key={"Other"}>Other</SelectItem>
                 </Select>
-              </div>
-              <div className='flex flex-row justify-start items-center mt-5'>
+                <Spacer x={4}></Spacer>
                 <DatePicker
                   id='joinDate'
                   name='joinDate'
@@ -237,6 +311,7 @@ export default function NewEmployeeForm() {
                     id='admin'
                     name='admin'
                     size='lg'
+                    checked={inputs.admin}
                     onChange={handleSwitchChange}
                   />
                 </div>
@@ -245,7 +320,7 @@ export default function NewEmployeeForm() {
                 <Button color='danger' variant='light' onPress={onClose}>
                   Cancel
                 </Button>
-                <Button color='primary' type='submit' onPress={onClose}>
+                <Button color='primary' type='submit'>
                   Submit
                 </Button>
               </ModalFooter>

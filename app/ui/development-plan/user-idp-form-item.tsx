@@ -1,21 +1,19 @@
-import {
-  PencilIcon,
-  InformationCircleIcon,
-  TrashIcon,
-  EyeIcon,
-} from "@heroicons/react/24/outline";
+"use server";
+import { TrashIcon, EyeIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { AdminFormType } from "@/lib/models/AdminForm";
-import { getUserFullName } from "@/lib/models/User";
-import FormStatusBadge from "./form-status-badge";
 import { format } from "date-fns";
+import FormStatusBadge from "../forms/form-status-badge";
 import { IDPFormType } from "@/lib/models/IDPForm";
 
 function formatDate(date: Date): string {
   return format(date, "MM-dd-yyyy");
 }
 
-export default function IdpFormItem({ dbData }: { dbData: IDPFormType[] }) {
+export default async function UserIDPFormItem({
+  dbData,
+}: {
+  dbData: IDPFormType[];
+}) {
   // const pathName = usePathname();
   if (dbData === undefined)
     return <h1 className='text-5xl'>LOAD SOME DATA LMAO</h1>;
@@ -32,29 +30,28 @@ export default function IdpFormItem({ dbData }: { dbData: IDPFormType[] }) {
               className='flex flex-row border-solid border-1 border-gray-400 rounded-full text-center overflow-ellipsis'
             >
               <div className='p-2 flex flex-1 justify-center items-center border-dashed border- border-red-600'>
-                {/* {getUserFullName(data.submittedBy)} */}
-                {/* <p className='truncate text-ellipsis w-[135px]'> */}
-                {getUserFullName(data.submittedBy)}
-                {/* </p> */}
-                {/* <Image src={placeholderMan} width={70} height={70} alt="" className="rounded-full border-solid border- border-pink-600"></Image> */}
-              </div>
-              <div className='p-2 flex flex-1 justify-center items-center border-dashed border- border-red-600'>
                 {formatDate(data.submissionDate)}
                 {/* <Image src={placeholderMan} width={70} height={70} alt="" className="rounded-full border-solid border- border-pink-600"></Image> */}
               </div>
               <div className='p-2 flex flex-1 justify-center items-center border-dashed border- border-red-600'>
-                {/* {data.formStatus.toString()} */}
+                {data.submissionDate == data.updatedAt ? (
+                  formatDate(data.updatedAt)
+                ) : (
+                  <p>TBD</p>
+                )}
+              </div>
+              <div className='p-2 flex flex-1 justify-center items-center border-dashed border- border-red-600'>
                 <FormStatusBadge status={data.formStatus}></FormStatusBadge>
               </div>
               <div className='p-2 flex flex-1 justify-center items-center border-dashed border- border-red-600'>
                 <div className='flex flex-row'>
                   {/* <div className="px-2"></div>
-                                  <Link href=""><PlusCircleIcon width={30}></PlusCircleIcon></Link> */}
+                                    <Link href=""><PlusCircleIcon width={30}></PlusCircleIcon></Link> */}
 
                   {/* <Link href=''>
-                      <InformationCircleIcon width={30}></InformationCircleIcon>
-                    </Link>
-                    <div className='px-2'></div> */}
+                        <InformationCircleIcon width={30}></InformationCircleIcon>
+                      </Link>
+                      <div className='px-2'></div> */}
                   <Link href=''>
                     <EyeIcon width={30}></EyeIcon>
                   </Link>

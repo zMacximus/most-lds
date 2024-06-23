@@ -4,10 +4,14 @@ import { PencilIcon, UserIcon } from "@heroicons/react/24/outline";
 import placeholderMan from "public/placeholder/Placeholder-Man.jpg";
 import Link from "next/link";
 import { employeeListData } from "@/lib/definitions";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@nextui-org/react";
 // import { useState } from "react";
 
 export default function UserItem({ dbData }: { dbData: employeeListData[] }) {
   // console.log(placeholderMan.src);
+  // const searchParams = new URLSearchParams();
+  const router = useRouter();
   return (
     <>
       {dbData.map((data) => {
@@ -49,9 +53,23 @@ export default function UserItem({ dbData }: { dbData: employeeListData[] }) {
                   <PencilIcon width={30} />
                 </Link>
                 <div className='px-2'></div>
-                <Link href={`./employees-list/${data.username}/profile`}>
+                <Button
+                  isIconOnly
+                  variant='light'
+                  onPress={() => {
+                    // CHAT GPT FIX THIS PART ONLY.
+                    console.log("PROFILE BUTTON");
+                    // searchParams.set("user_id", data.username);
+                    router.push(
+                      `./employees-list/${data.username}/profile?user_id=${data.username}`
+                    );
+                  }}
+                >
                   <UserIcon width={30} />
-                </Link>
+                </Button>
+                {/* <Link href={`./employees-list/${data.username}/profile`}>
+                  <UserIcon width={30} />
+                </Link> */}
               </div>
             </div>
           </div>

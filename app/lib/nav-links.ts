@@ -73,6 +73,11 @@ export function getAdminLinks(id: string) {
       icon: "FolderIcon",
     },
     {
+      name: "Manage E-Lib",
+      href: `/dashboard/${id}/admin/e-lib`,
+      icon: "BuildingLibraryIcon",
+    },
+    {
       name: "Scheduler",
       href: `/dashboard/${id}/admin/scheduler`,
       icon: "CalendarIcon",
