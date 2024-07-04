@@ -11,7 +11,7 @@ import { findUserData } from "@/lib/models/User";
 export default async function SideNav() {
   const user_id = getUserCookie();
   const isAdmin: Boolean = await findUserData(user_id!).then((data) => {
-    return data?.admin;
+    return data?.admin!;
   });
   const userLink: CustomLink[] = getUserLinks(user_id!);
   const adminLink: CustomLink[] = getAdminLinks(user_id!);

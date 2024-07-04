@@ -1,28 +1,44 @@
 "use client";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import {
+  EyeIcon,
+  PencilIcon,
+  PlusCircleIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import { Modal, Button, useDisclosure } from "@nextui-org/react";
 import { ReactNode } from "react";
 
-export default function ModalFormButton({
+export default function AccordionModalFormButton({
   children,
-  buttonName,
+  buttonIcon,
   buttonSize,
 }: {
   children: ReactNode;
-  buttonName: string;
+  buttonIcon: "pencil" | "eye" | "plus" | "trash";
   buttonSize?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const icons = {
+    pencil: PencilIcon,
+    eye: EyeIcon,
+    plus: PlusCircleIcon,
+    trash: TrashIcon,
+  };
+
+  const IconButton = icons[buttonIcon];
   return (
     <>
-      <Button onPress={onOpen} color='primary' size='md'>
+      <Button
+        onPress={onOpen}
+        size='md'
+        isIconOnly
+        variant='light'
+        //   value={data.title}
+        // onPress={(e) => console.log(e.target.value)}
+      >
         <div className='flex flex-row justify-center items-center max-h-[2em] max-w-[100em]'>
-          <PlusCircleIcon
-            width={"2.5em"}
-            color='white'
-            className='p-1.5'
-          ></PlusCircleIcon>
-          <span className='text-nowrap text-white pr-2.5'>{buttonName}</span>
+          <IconButton width={"25px"}></IconButton>
+          {/* <span className='text-nowrap text-white pr-2.5'>{buttonName}</span> */}
         </div>
       </Button>
       <Modal

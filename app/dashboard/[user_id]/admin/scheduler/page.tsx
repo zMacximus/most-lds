@@ -11,7 +11,9 @@ export default function Page() {
     <div className='h-full border-solid rounded-3xl drop-shadow-md border- border-gray-400 relative overflow-hidden bg-white'>
       <Spacer y={5}></Spacer>
       <div className='text-[1.5rem] ml-5'>Admin Scheduler</div>
+      {/* <div className='p-5'> */}
       <HomeScheduler></HomeScheduler>
+      {/* </div> */}
     </div>
   );
 }

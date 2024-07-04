@@ -106,6 +106,19 @@ export type EmployeeFormInput = {
   joinDate: Date;
 };
 
+export type TopicFormInput = {
+  topicTitle: string;
+  categoryName: string;
+};
+
+export type SubTopicFormInput = {
+  mainTopicId: number;
+  subTopicTitle: string;
+  url: string;
+  typeOfContent: 0 | 1; //0 = PDF; 1 = Video,
+  categoryName: string;
+};
+
 export type employeeListData = {
   username: any;
   firstName: any;
