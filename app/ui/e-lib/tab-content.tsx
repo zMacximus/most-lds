@@ -1,14 +1,17 @@
 import { Suspense, useEffect, useState } from "react";
 import {
+  ArrowUpOnSquareIcon,
   BookOpenIcon,
   FilmIcon,
   FolderIcon,
 } from "@heroicons/react/24/outline";
-import { Accordion, AccordionItem, Skeleton } from "@nextui-org/react";
+import { Accordion, AccordionItem, Button, Skeleton } from "@nextui-org/react";
 import { getAllTopics, TopicType } from "@/lib/models/MainTopic";
 import { getAllSubTopics, SubTopicType } from "@/lib/models/SubTopic";
+import { redirect, useRouter } from "next/navigation";
 
 export default function TabContent({ categoryName }: { categoryName: string }) {
+  const router = useRouter();
   const [topicData, setTopicData] = useState<TopicType[]>([]);
   const [subTopicData, setSubTopicData] = useState<SubTopicType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -53,6 +56,25 @@ export default function TabContent({ categoryName }: { categoryName: string }) {
         className='flex flex-col w-full h-auto relative p-5'
       > */}
       <div className='flex flex-col w-full h-auto relative p-5 border- border-solid border-red-600'>
+        <div className='flex flex-row justify-end items-end'>
+          <Button
+            onClick={() =>
+              // console.log('REDIRECTING')
+              router.push(`/dashboard/daPiang/e-library/upload`)
+            }
+            color='primary'
+            size='md'
+          >
+            <div className='flex flex-row justify-center items-center max-h-[2em] max-w-[100em]'>
+              <ArrowUpOnSquareIcon
+                width={"2.5em"}
+                color='white'
+                className='p-1.5'
+              ></ArrowUpOnSquareIcon>
+              <span className='text-nowrap text-white pr-2.5'>Upload</span>
+            </div>
+          </Button>
+        </div>
         {/* <div className='flex flex-row justify-end items-end'>
             <ModalFormButton buttonName={"New Topic"} buttonSize='sm'>
               <NewTopicForm categoryName={categoryName} />
@@ -60,7 +82,7 @@ export default function TabContent({ categoryName }: { categoryName: string }) {
           </div> */}
         {topicData.length === 0 ? (
           <div className='flex flex-row h-full w-full justify-center items-center'>
-            ERROR 404
+            ERROR 404: No Content Found
           </div>
         ) : (
           <Accordion selectionMode='single' className='text-2xl'>

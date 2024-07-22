@@ -1,7 +1,8 @@
 "use server";
 import { DataTypes, Op } from "sequelize";
 import db from "@/lib/sequelize";
-import { getAllSubTopics, SubTopicType } from "./SubTopic";
+import { dropAllSubTopics, getAllSubTopics, SubTopicType } from "./SubTopic";
+import { TopicFormInput } from "../definitions";
 
 export async function DefineMainTopicDB(categoryName: string) {
   const CategoryTopics = db.define(
@@ -15,7 +16,11 @@ export async function DefineMainTopicDB(categoryName: string) {
       topicTitle: {
         type: DataTypes.STRING(),
         allowNull: false,
-        unique: "topicTitle",
+        // unique: "topicTitle",
+      },
+      createdBy: {
+        type: DataTypes.STRING(),
+        allowNull: false,
       },
     },
     { freezeTableName: true }
@@ -31,7 +36,37 @@ export async function DefineMainTopicDB(categoryName: string) {
 export type TopicType = {
   id: number;
   topicTitle: string;
+  createdBy: string;
 };
+
+export async function dropTopic(categoryName: string, topicId: number) {
+  const CategoryTopics = await DefineMainTopicDB(categoryName);
+
+  await dropAllSubTopics(topicId);
+
+  CategoryTopics.destroy({
+    where: {
+      id: topicId,
+    },
+  });
+}
+
+export async function updateTopic(
+  categoryName: string,
+  topicId: number,
+  data: TopicFormInput
+) {
+  try {
+    const CategoryTopics = await DefineMainTopicDB(categoryName);
+
+    await CategoryTopics.update(
+      { topicTitle: data.topicTitle },
+      { where: { id: topicId } }
+    );
+  } catch (error) {
+    console.error("Error updating topic:", error);
+  }
+}
 
 export async function getAllTopics(categoryName: string) {
   try {
@@ -44,6 +79,7 @@ export async function getAllTopics(categoryName: string) {
     const topics: TopicType[] = dataArray.map((data) => ({
       id: data.getDataValue("id"),
       topicTitle: data.getDataValue("topicTitle"),
+      createdBy: data.getDataValue("createdBy"),
     }));
 
     // const topicIds = topics.map((data) => data.id);

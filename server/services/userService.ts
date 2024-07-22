@@ -63,3 +63,8 @@ export async function signOut() {
   redirect("/login");
   // useRouter().push('/login')
 }
+
+// export async function isUserAdmin(user: string) {
+
+//   return false;
+// }

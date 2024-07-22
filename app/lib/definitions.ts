@@ -109,14 +109,16 @@ export type EmployeeFormInput = {
 export type TopicFormInput = {
   topicTitle: string;
   categoryName: string;
+  createdBy: string;
 };
 
 export type SubTopicFormInput = {
   mainTopicId: number;
   subTopicTitle: string;
   url: string;
-  typeOfContent: 0 | 1; //0 = PDF; 1 = Video,
+  typeOfContent: 0 | 1 | 2 | number; //0 = PDF; 1 = Video; 2 = PPT
   categoryName: string;
+  uploadedBy: string;
 };
 
 export type employeeListData = {

@@ -1,6 +1,7 @@
 "use server";
 import { DataTypes, Op } from "sequelize";
 import db from "@/lib/sequelize";
+import { SubTopicFormInput } from "../definitions";
 
 export async function DefineSubTopicDB() {
   const SubTopics = db.define(
@@ -14,7 +15,7 @@ export async function DefineSubTopicDB() {
       subTopicTitle: {
         type: DataTypes.STRING(),
         allowNull: false,
-        unique: "topicTitle",
+        // unique: "topicTitle",
       },
       url: {
         type: DataTypes.STRING(),
@@ -30,6 +31,10 @@ export async function DefineSubTopicDB() {
         allowNull: false,
       },
       categoryName: {
+        type: DataTypes.STRING(),
+        allowNull: false,
+      },
+      uploadedBy: {
         type: DataTypes.STRING(),
         allowNull: false,
       },
@@ -50,7 +55,43 @@ export type SubTopicType = {
   url: string;
   typeOfContent: number;
   mainTopicId: number;
+  uploadedBy: string;
 };
+
+export async function updateSubtopic(topicId: number, data: SubTopicFormInput) {
+  try {
+    const subTopics = await DefineSubTopicDB();
+
+    await subTopics.update(
+      {
+        subTopicTitle: data.subTopicTitle,
+        url: data.url,
+        typeOfContent: data.typeOfContent,
+      },
+      { where: { id: topicId } }
+    );
+  } catch (error) {
+    console.error("Error updating topic:", error);
+  }
+}
+
+export async function dropAllSubTopics(mainTopicId: number) {
+  const subTopics = await DefineSubTopicDB();
+  subTopics.destroy({
+    where: {
+      mainTopicId: mainTopicId,
+    },
+  });
+}
+
+export async function dropSubTopic(subTopicId: number) {
+  const subTopics = await DefineSubTopicDB();
+  subTopics.destroy({
+    where: {
+      id: subTopicId,
+    },
+  });
+}
 
 export async function getAllSubTopics(
   categoryName: string,
@@ -80,6 +121,7 @@ export async function getAllSubTopics(
       typeOfContent: data.getDataValue("typeOfContent"),
       mainTopicId: data.getDataValue("mainTopicId"),
       categoryName: data.getDataValue("categoryName"),
+      uploadedBy: data.getDataValue("uploadedBy"),
       order: [["subTopicTitle", "DESC"]], // This line seems incorrect; remove it if unnecessary
     }));
 

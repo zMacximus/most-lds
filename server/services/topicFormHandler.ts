@@ -8,6 +8,7 @@ import { z } from "zod";
 const formInputSchema = z.object({
   topicTitle: z.string().min(1),
   categoryName: z.string().min(1),
+  createdBy: z.string().min(1),
 });
 
 export async function validateFormInput(formInput: TopicFormInput) {
@@ -19,20 +20,21 @@ export async function newTopicHandler(formInput: TopicFormInput) {
     // Transform the form data to match the custom user schema
     const newTopic = (await DefineMainTopicDB(formInput.categoryName)).build({
       topicTitle: formInput.topicTitle,
+      createdBy: formInput.createdBy,
     });
 
     // Save the new user to the database
     await newTopic.save();
 
-    console.log("New user created:", newTopic);
+    console.log("New topic created:", newTopic);
 
     // Return the new user or success message
     return { success: true, user: newTopic };
   } catch (error) {
-    console.error("Error creating new user:", error);
+    console.error("Error creating new topic:", error);
     return {
       success: false,
-      message: "Failed to create user",
+      message: "Failed to create topic",
       error: error,
     };
   }

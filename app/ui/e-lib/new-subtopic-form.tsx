@@ -1,5 +1,6 @@
 "use client";
 import { SubTopicFormInput } from "@/lib/definitions";
+import { SubTopicType, updateSubtopic } from "@/lib/models/SubTopic";
 import {
   newSubTopicHandler,
   validateFormInput,
@@ -16,25 +17,20 @@ import {
 } from "@nextui-org/react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, ChangeEventHandler, FormEvent, useState } from "react";
-
-function convertVideoURL(url: string) {
-  const embedURL = new URL(url);
-  embedURL.searchParams.delete("watch?v=");
-  embedURL.pathname = embedURL.pathname.replace("watch", "embed");
-  return embedURL.toString();
-}
-
-function convertPDFURL(url: string) {
-  return url.replace("/view", "/preview");
-}
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 export default function NewSubTopicForm({
   categoryName,
   mainTopicId,
+  user_id,
+  loadData,
+  dataToLoad,
 }: {
   categoryName: string;
   mainTopicId: number;
+  user_id: string;
+  loadData?: boolean;
+  dataToLoad?: SubTopicType;
 }) {
   const router = useRouter();
   const pathName = usePathname();
@@ -44,9 +40,23 @@ export default function NewSubTopicForm({
     mainTopicId: mainTopicId,
     subTopicTitle: "",
     url: "",
-    typeOfContent: 0, //0 = PDF; 1 = Video
+    typeOfContent: 0, //0 = PDF; 1 = Video; 2=PPT
     categoryName: categoryName,
+    uploadedBy: user_id,
   });
+
+  useEffect(() => {
+    if (loadData && dataToLoad) {
+      setInputs({
+        mainTopicId: mainTopicId,
+        subTopicTitle: dataToLoad.subTopicTitle,
+        url: dataToLoad.url,
+        typeOfContent: dataToLoad.typeOfContent,
+        categoryName: categoryName,
+        uploadedBy: user_id,
+      });
+    }
+  }, [loadData, dataToLoad, categoryName, mainTopicId, user_id]);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;
@@ -57,7 +67,12 @@ export default function NewSubTopicForm({
   const handleRadioChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputs((values) => ({
       ...values,
-      typeOfContent: event.target.value === "pdf" ? 0 : 1,
+      typeOfContent:
+        event.target.value === "pdf"
+          ? 0
+          : event.target.value === "video"
+          ? 1
+          : 2,
     }));
   };
 
@@ -72,22 +87,23 @@ export default function NewSubTopicForm({
       newURL = inputs.url.replace("/view", "/preview");
     if (inputs.typeOfContent == 1)
       newURL = inputs.url.replace("/watch?v=", "/embed/");
+    if (inputs.typeOfContent == 2)
+      newURL = inputs.url.replace(
+        /\/(edit|present|preview|view)\?.*$/,
+        "/embed"
+      );
     console.log(newURL);
 
     inputs.url = newURL!;
 
-    // let embedUrl: string = "";
-    // if (inputs.typeOfContent == 0) {
-    //   embedUrl = convertVideoURL(inputs.url);
-    // } else if (inputs.typeOfContent == 1) {
-    //   embedUrl = convertPDFURL(inputs.url);
-    // }
-    // console.log("INITIAL URL: ", inputs.url);
-    // console.log("NEW URL: ", embedUrl);
-
     console.log({ ...inputs });
     if (await validateFormInput({ ...inputs })) {
-      await newSubTopicHandler({ ...inputs }, categoryName);
+      if (loadData) {
+        await updateSubtopic(dataToLoad?.id!, inputs);
+      } else {
+        await newSubTopicHandler({ ...inputs }, categoryName);
+      }
+
       onClose();
       router.push(pathName);
     }
@@ -97,7 +113,11 @@ export default function NewSubTopicForm({
     <ModalContent>
       {(onClose) => (
         <>
-          <ModalHeader>New Topic Form</ModalHeader>
+          {loadData ? (
+            <ModalHeader>Edit Subtopic Form</ModalHeader>
+          ) : (
+            <ModalHeader>New Subtopic Form</ModalHeader>
+          )}
           <ModalBody>
             <form onSubmit={(e) => handleSubmit(e, onClose)}>
               <div className='flex flex-row justify-center items-center'>
@@ -130,11 +150,18 @@ export default function NewSubTopicForm({
                 <RadioGroup
                   label='Content Type'
                   orientation='horizontal'
-                  value={inputs.typeOfContent === 0 ? "pdf" : "video"}
+                  value={
+                    inputs.typeOfContent === 0
+                      ? "pdf"
+                      : inputs.typeOfContent === 1
+                      ? "video"
+                      : "ppt"
+                  }
                   onChange={handleRadioChange}
                 >
                   <Radio value='pdf'>PDF</Radio>
                   <Radio value='video'>Video</Radio>
+                  <Radio value='ppt'>PPT</Radio>
                 </RadioGroup>
               </div>
               <ModalFooter>

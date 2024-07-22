@@ -15,7 +15,8 @@ const formInputSchema = z.object({
   url: z.string().min(1),
   typeOfContent: z.number(),
   mainTopicId: z.number(),
-  categoryName: z.string(),
+  categoryName: z.string().min(1),
+  uploadedBy: z.string().min(1),
 });
 
 export async function validateFormInput(formInput: SubTopicFormInput) {
@@ -42,6 +43,7 @@ export async function newSubTopicHandler(
       typeOfContent: formInput.typeOfContent,
       mainTopicId: formInput.mainTopicId,
       categoryName: categoryName,
+      uploadedBy: formInput.uploadedBy,
     });
 
     console.log("New user created:", newTopic);

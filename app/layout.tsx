@@ -7,7 +7,7 @@ import { NextUIProvider } from "@nextui-org/react";
 import favi from "../public/favicon.ico";
 
 export const metadata: Metadata = {
-  title: "HRMIS TMS",
+  title: "HRMIS LDS",
   icons: {
     icon: favi.src,
   },

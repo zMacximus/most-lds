@@ -36,7 +36,7 @@ export default function Page({ searchParams }: PageProps) {
             <h1
               className={`${josefin.className} text-[5em] text-primary text-center`}
             >
-              HRMIS-TMS
+              HRMIS LDS
             </h1>
           </div>
         </div>

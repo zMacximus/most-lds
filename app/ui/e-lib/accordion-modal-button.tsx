@@ -5,7 +5,7 @@ import {
   PlusCircleIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-import { Modal, Button, useDisclosure } from "@nextui-org/react";
+import { Modal, Button, useDisclosure, button } from "@nextui-org/react";
 import { ReactNode } from "react";
 
 export default function AccordionModalFormButton({
@@ -28,19 +28,36 @@ export default function AccordionModalFormButton({
   const IconButton = icons[buttonIcon];
   return (
     <>
-      <Button
-        onPress={onOpen}
-        size='md'
-        isIconOnly
-        variant='light'
-        //   value={data.title}
-        // onPress={(e) => console.log(e.target.value)}
-      >
-        <div className='flex flex-row justify-center items-center max-h-[2em] max-w-[100em]'>
-          <IconButton width={"25px"}></IconButton>
-          {/* <span className='text-nowrap text-white pr-2.5'>{buttonName}</span> */}
-        </div>
-      </Button>
+      {buttonIcon === "trash" ? (
+        <Button
+          onPress={onOpen}
+          size='md'
+          isIconOnly
+          color='danger'
+          variant='light'
+          //   value={data.title}
+          // onPress={(e) => console.log(e.target.value)}
+        >
+          <div className='flex flex-row justify-center items-center max-h-[2em] max-w-[100em]'>
+            <IconButton width={"25px"}></IconButton>
+            {/* <span className='text-nowrap text-white pr-2.5'>{buttonName}</span> */}
+          </div>
+        </Button>
+      ) : (
+        <Button
+          onPress={onOpen}
+          size='md'
+          isIconOnly
+          variant='light'
+          //   value={data.title}
+          // onPress={(e) => console.log(e.target.value)}
+        >
+          <div className='flex flex-row justify-center items-center max-h-[2em] max-w-[100em]'>
+            <IconButton width={"25px"}></IconButton>
+            {/* <span className='text-nowrap text-white pr-2.5'>{buttonName}</span> */}
+          </div>
+        </Button>
+      )}
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
