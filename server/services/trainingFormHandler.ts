@@ -12,21 +12,24 @@ const formInputSchema = z.object({
   instructor: z.string().min(1),
   maxPopulation: z.number(),
   status: z.boolean(),
+  url: z.string().min(1),
 });
+
+export async function validateFormInput(formInput: TrainingFormInput) {
+  return formInputSchema.parse(formInput);
+}
 
 export async function newTrainingHandler(formInput: TrainingFormInput) {
   try {
-    // Validate the form data
-    const validatedInput = formInputSchema.parse(formInput);
-
     // Transform the form data to match the custom user schema
     const newTraining = Training.build({
-      code: validatedInput.code,
-      title: validatedInput.title,
-      modality: validatedInput.modality,
-      maxPopulation: validatedInput.maxPopulation,
-      instructor: validatedInput.instructor,
-      status: validatedInput.status,
+      code: formInput.code,
+      title: formInput.title,
+      modality: formInput.modality,
+      maxPopulation: formInput.maxPopulation,
+      instructor: formInput.instructor,
+      status: formInput.status,
+      url: formInput.url,
     });
 
     // Save the new user to the database

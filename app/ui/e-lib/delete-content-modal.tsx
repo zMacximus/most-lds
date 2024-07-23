@@ -2,6 +2,7 @@
 import { SubTopicFormInput } from "@/lib/definitions";
 import { dropTopic } from "@/lib/models/MainTopic";
 import { dropSubTopic } from "@/lib/models/SubTopic";
+import { dropTraining } from "@/lib/models/Training";
 import {
   newSubTopicHandler,
   validateFormInput,
@@ -29,7 +30,7 @@ export default function DeleteContentForm({
   categoryName?: string;
   content_id: number;
   user_id: string;
-  contentType: "topic" | "subtopic"; //expand later to work with the rest of the tables that need deletion
+  contentType: "topic" | "subtopic" | "training"; //expand later to work with the rest of the tables that need deletion
 }) {
   const router = useRouter();
   const pathName = usePathname();
@@ -44,6 +45,7 @@ export default function DeleteContentForm({
     if (contentType === "topic")
       await dropTopic(categoryName ? categoryName : "default", content_id);
     if (contentType === "subtopic") await dropSubTopic(content_id);
+    if (contentType === "training") await dropTraining(content_id);
     onClose();
     router.push(pathName);
   };

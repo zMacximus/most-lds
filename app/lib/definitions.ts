@@ -132,10 +132,11 @@ export type employeeListData = {
 export type TrainingFormInput = {
   title: string;
   code: string;
-  modality: "On-Site" | "Online";
+  modality: "On-Site" | "Online" | string;
   instructor: string;
   maxPopulation: number;
   status: boolean;
+  url: string;
 };
 
 export type trainingListData = {

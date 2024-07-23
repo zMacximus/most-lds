@@ -1,5 +1,7 @@
+"use server";
 import { DataTypes } from "sequelize";
 import db from "@/lib/sequelize";
+import { TrainingFormInput } from "../definitions";
 
 const Training = db.define(
   "Training",
@@ -47,9 +49,15 @@ const Training = db.define(
       allowNull: false,
       defaultValue: false,
     },
+    url: {
+      type: DataTypes.STRING(),
+      allowNull: false,
+    },
   },
   { freezeTableName: true }
 );
+
+Training.sync();
 
 // db.sync({ alter: true, force: true });
 
@@ -59,12 +67,39 @@ export type TrainingType = {
   id: number;
   code: string;
   title: string;
-  modality: string;
+  modality: "Online" | "On-Site" | string;
   currentPopulation: number;
   maxPopulation: number;
   instructor: string;
   status: string;
+  url: string;
 };
+
+export async function dropTraining(id: number) {
+  Training.destroy({ where: { id: id } });
+}
+
+export async function updateTraining(
+  trainingId: number,
+  data: TrainingFormInput
+) {
+  try {
+    await Training.update(
+      {
+        code: data.code,
+        title: data.title,
+        modality: data.modality,
+        maxPopulation: data.maxPopulation,
+        instructor: data.instructor,
+        status: data.status,
+        url: data.url,
+      },
+      { where: { id: trainingId } }
+    );
+  } catch (error) {
+    console.error("Error: updating training:", error);
+  }
+}
 
 export async function getAllTrainings() {
   try {
@@ -79,6 +114,7 @@ export async function getAllTrainings() {
           maxPopulation: data.getDataValue("maxPopulation"),
           instructor: data.getDataValue("instructor"),
           status: data.getDataValue("status"),
+          url: data.getDataValue("url"),
         }));
       })
       .catch((error) => {
@@ -91,31 +127,3 @@ export async function getAllTrainings() {
     console.log("Something went wrong trying to access database: ", error);
   }
 }
-
-// export async function findUserData(username: string) {
-//   try {
-//     db;
-//     const user = await User.findOne({
-//       where: {
-//         username: {
-//           [Op.like]: `%${username}%`,
-//         },
-//       },
-//     });
-
-//     return {
-//       username: user?.getDataValue("username"),
-//       firstName: user?.getDataValue("firstName"),
-//       lastName: user?.getDataValue("lastName"),
-//       admin: user?.getDataValue("admin"),
-//     };
-//   } catch (err) {
-//     console.error("INVALID CREDS", err);
-//     return null;
-//   }
-// }
-
-// export async function isUserAdmin(username: string) {
-//   const user = await findUserData(username);
-//   return user?.admin;
-// }

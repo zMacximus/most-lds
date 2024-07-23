@@ -1,5 +1,5 @@
+"use server";
 import CourseItem from "@/components/trainings/course-item";
-import TableListDisplay from "@/components/employees/employee-table";
 import Training from "@/lib/models/Training";
 import { Op } from "sequelize";
 import TrainingTable from "@/components/trainings/training-table";
@@ -38,6 +38,7 @@ export default async function Page({
         maxPopulation: training.getDataValue("maxPopulation"),
         instructor: training.getDataValue("instructor"),
         status: training.getDataValue("status"),
+        url: training.getDataValue("url"),
       }));
     })
     .catch((error) => {

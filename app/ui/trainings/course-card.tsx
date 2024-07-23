@@ -6,7 +6,6 @@ import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import StatusBadge from "@/components/status-badge";
 import { TrainingType } from "@/lib/models/Training";
-import { Model } from "sequelize";
 
 // Above is placeholder data
 
@@ -21,7 +20,7 @@ export default function CourseCard({ dbData }: { dbData: TrainingType[] }) {
               className='mt-2 transition hover:-translate-y-1 hover:scale-105'
               key={data.id}
             >
-              <Link href=''>
+              <Link href={data.url}>
                 <div className='flex flex-col max-w-[278px] border-solid border-2 border-gray-400 hover:shadow-md'>
                   <div className='w-full max-h-[150px] overflow-hidden relative'>
                     <Image

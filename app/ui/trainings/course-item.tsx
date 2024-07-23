@@ -1,13 +1,23 @@
-import { PencilIcon, InformationCircleIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
-import StatusBadge from "@/components/status-badge";
-import { trainingListData } from "@/lib/definitions";
-import { TrainingType } from "@/lib/models/Training";
+"use server";
 
-export default function CourseItem({ dbData }: { dbData: TrainingType[] }) {
+import StatusBadge from "@/components/status-badge";
+import { TrainingType } from "@/lib/models/Training";
+import AccordionModalFormButton from "../e-lib/accordion-modal-button";
+import NewTrainingForm from "./new-training-form";
+import DeleteContentForm from "../e-lib/delete-content-modal";
+
+export default async function CourseItem({
+  dbData,
+}: {
+  dbData: TrainingType[];
+}) {
   // const pathName = usePathname();
-  if (dbData === undefined)
-    return <h1 className='text-5xl'>LOAD SOME DATA LMAO</h1>;
+  if (dbData.length <= 0)
+    return (
+      <div className='flex justify-center items-center h-full'>
+        <h1 className='text-2xl'>404: No Data Found</h1>
+      </div>
+    );
   return (
     <>
       {dbData.map((data) => {
@@ -35,17 +45,22 @@ export default function CourseItem({ dbData }: { dbData: TrainingType[] }) {
               </div>
               <div className='p-2 flex flex-1 justify-center items-center border-dashed border- border-red-600'>
                 <div className='flex flex-row'>
-                  <Link href=''>
-                    <PencilIcon width={30}></PencilIcon>
-                  </Link>
-                  {/* <div className="px-2"></div>
-                                <Link href=""><PlusCircleIcon width={30}></PlusCircleIcon></Link> */}
-                  {/* <div className="px-1"></div>
-                                <Link href=""><TrashIcon width={30}></TrashIcon></Link> */}
-                  <div className='px-2'></div>
-                  <Link href=''>
-                    <InformationCircleIcon width={30}></InformationCircleIcon>
-                  </Link>
+                  <AccordionModalFormButton buttonIcon={"pencil"}>
+                    <NewTrainingForm
+                      loadData={true}
+                      dataToLoad={data}
+                    ></NewTrainingForm>
+                  </AccordionModalFormButton>
+                  <AccordionModalFormButton
+                    buttonIcon={"trash"}
+                    buttonSize='md'
+                  >
+                    <DeleteContentForm
+                      content_id={data.id}
+                      user_id={""}
+                      contentType={"training"}
+                    ></DeleteContentForm>
+                  </AccordionModalFormButton>
                 </div>
               </div>
             </div>
