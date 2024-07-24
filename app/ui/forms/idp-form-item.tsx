@@ -1,27 +1,32 @@
-import {
-  PencilIcon,
-  InformationCircleIcon,
-  TrashIcon,
-  EyeIcon,
-} from "@heroicons/react/24/outline";
-import Link from "next/link";
-import { AdminFormType } from "@/lib/models/AdminForm";
-import { getUserFullName } from "@/lib/models/User";
+"use server";
+import { getUserFullName, isUserAdmin } from "@/lib/models/User";
 import FormStatusBadge from "./form-status-badge";
 import { format } from "date-fns";
 import { IDPFormType } from "@/lib/models/IDPForm";
+import AccordionModalFormButton from "../e-lib/accordion-modal-button";
+import NewIDPForm from "../development-plan/new-idp-form";
+import DeleteContentForm from "../e-lib/delete-content-modal";
+import { getUserCookie } from "@/server/services/cookies";
 
 function formatDate(date: Date): string {
   return format(date, "MM-dd-yyyy");
 }
 
-export default function IdpFormItem({ dbData }: { dbData: IDPFormType[] }) {
+export default async function IdpFormItem({
+  dbData,
+}: {
+  dbData: IDPFormType[];
+}) {
   // const pathName = usePathname();
-  if (dbData === undefined)
-    return <h1 className='text-5xl'>LOAD SOME DATA LMAO</h1>;
+
+  const isAdmin = await isUserAdmin(getUserCookie()!);
+
+  if (dbData.length <= 0)
+    return <h1 className='text-5xl'>ERROR 404: No Data Found</h1>;
   return (
     <>
-      {dbData.map((data) => {
+      {dbData.map(async (data) => {
+        const fullName = await getUserFullName(data.submittedBy);
         // console.log(
         //   data.submissionDate + "________" + formatDate(data.submissionDate)
         // );
@@ -48,23 +53,26 @@ export default function IdpFormItem({ dbData }: { dbData: IDPFormType[] }) {
               </div>
               <div className='p-2 flex flex-1 justify-center items-center border-dashed border- border-red-600'>
                 <div className='flex flex-row'>
-                  {/* <div className="px-2"></div>
-                                  <Link href=""><PlusCircleIcon width={30}></PlusCircleIcon></Link> */}
-
-                  {/* <Link href=''>
-                      <InformationCircleIcon width={30}></InformationCircleIcon>
-                    </Link>
-                    <div className='px-2'></div> */}
-                  <Link href=''>
-                    <EyeIcon width={30}></EyeIcon>
-                  </Link>
-                  <div className='px-2'></div>
-                  <Link href=''>
-                    <TrashIcon
-                      width={30}
-                      className='text-danger-500'
-                    ></TrashIcon>
-                  </Link>
+                  <AccordionModalFormButton buttonIcon={"eye"}>
+                    <NewIDPForm
+                      user_id={data.submittedBy}
+                      user_name={fullName!}
+                      loadData={true}
+                      dataToLoad={data}
+                      readOnly={true}
+                      adminAccess={isAdmin!}
+                    ></NewIDPForm>
+                  </AccordionModalFormButton>
+                  <AccordionModalFormButton
+                    buttonIcon={"trash"}
+                    buttonSize='md'
+                  >
+                    <DeleteContentForm
+                      content_id={data.id}
+                      user_id={""}
+                      contentType={"idp"}
+                    ></DeleteContentForm>
+                  </AccordionModalFormButton>
                 </div>
               </div>
             </div>

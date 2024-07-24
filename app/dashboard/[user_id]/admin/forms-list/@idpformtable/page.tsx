@@ -1,7 +1,9 @@
 import { getAllAdminForms } from "@/lib/models/AdminForm";
 import IdpFormTable from "@/components/forms/idp-form-table";
 import IdpFormItem from "@/components/forms/idp-form-item";
-import { getAllIDPForms } from "@/lib/models/IDPForm";
+import { getAllIDPForms, getIDPFormsByNotedBy } from "@/lib/models/IDPForm";
+import { getUserFullName } from "@/lib/models/User";
+import { getUserCookie } from "@/server/services/cookies";
 
 export default async function Page({
   searchParams,
@@ -14,7 +16,9 @@ export default async function Page({
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
 
-  const dbData = await getAllIDPForms(query);
+  // const dbData = await getAllIDPForms(query);
+  const userFullName = await getUserFullName(getUserCookie()!);
+  const dbData = await getIDPFormsByNotedBy(userFullName!);
 
   function getDataForPage(pageNumber: number, data: any[]) {
     const startIndex = (pageNumber - 1) * 5;

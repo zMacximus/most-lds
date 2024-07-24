@@ -119,6 +119,7 @@ export default function NewEmployeeForm({
 
   useEffect(() => {
     if (loadData && dataToLoad) {
+      console.log(dataToLoad.birthDay);
       const data = dataToLoad;
       setBirthDay(parseDate(data.birthDay.toString())); // assuming data.birthDay is a valid date string or Date object
       setJoinDate(parseDate(data.joinDate.toString()));
@@ -258,6 +259,7 @@ export default function NewEmployeeForm({
                   name='birthDay'
                   isRequired
                   label='Birthday'
+                  showMonthAndYearPickers
                   labelPlacement='outside'
                   size='md'
                   className='max-w-[250px]'
@@ -376,6 +378,7 @@ export default function NewEmployeeForm({
                   id='joinDate'
                   name='joinDate'
                   isRequired
+                  showMonthAndYearPickers
                   label='Join Date'
                   labelPlacement='outside'
                   size='md'

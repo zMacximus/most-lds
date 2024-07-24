@@ -87,6 +87,7 @@ export type IDPFormInput = {
   targetCompetencyTraining?: string | null;
   targetScheduleOfCompletion: Date;
   formStatus?: number;
+  notedBy: string;
 };
 
 export type EmployeeFormInput = {

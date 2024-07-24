@@ -16,6 +16,7 @@ const formInputSchema = z.object({
   targetCompetencyTraining: z.string(),
   targetScheduleOfCompletion: z.date(),
   formStatus: z.number(), // Optional because it has a default value in the model
+  notedBy: z.string().min(1),
 });
 
 export async function validateFormInput(formInput: IDPFormInput) {
@@ -25,22 +26,23 @@ export async function validateFormInput(formInput: IDPFormInput) {
 export async function newIDPFormHandler(formInput: IDPFormInput) {
   try {
     // Validate the form data
-    const validatedInput = formInputSchema.parse(formInput);
+    // const validatedInput = formInputSchema.parse(formInput);
 
     // Transform the form data to match the custom user schema
     const newIDPForm = IDPForm.build({
       id: null,
-      name: validatedInput.name,
-      submittedBy: validatedInput.submittedBy,
-      position: validatedInput.position,
-      yearsInThePosition: validatedInput.yearsInThePosition,
-      division: validatedInput.division,
-      objectives: validatedInput.objectives || null,
-      areasOfStrength: validatedInput.areasOfStrength || null,
-      areasOfDevelopment: validatedInput.areasOfDevelopment || null,
-      targetCompetencyTraining: validatedInput.targetCompetencyTraining || null,
-      targetScheduleOfCompletion: validatedInput.targetScheduleOfCompletion,
-      formStatus: validatedInput.formStatus || 0,
+      name: formInput.name,
+      submittedBy: formInput.submittedBy,
+      position: formInput.position,
+      yearsInThePosition: formInput.yearsInThePosition,
+      division: formInput.division,
+      objectives: formInput.objectives || null,
+      areasOfStrength: formInput.areasOfStrength || null,
+      areasOfDevelopment: formInput.areasOfDevelopment || null,
+      targetCompetencyTraining: formInput.targetCompetencyTraining || null,
+      targetScheduleOfCompletion: formInput.targetScheduleOfCompletion,
+      formStatus: formInput.formStatus || 0,
+      notedBy: formInput.notedBy,
     });
 
     // Save the new form to the database

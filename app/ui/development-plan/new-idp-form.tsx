@@ -1,11 +1,12 @@
 "use client";
 import { IDPFormInput } from "@/lib/definitions";
+import { changeStatus, IDPFormType } from "@/lib/models/IDPForm";
 import {
   newIDPFormHandler,
   validateFormInput,
 } from "@/server/services/idpFormHandler";
 // import { getUserFullName } from "@/lib/models/User";
-import { getLocalTimeZone } from "@internationalized/date";
+import { getLocalTimeZone, parseDate } from "@internationalized/date";
 import {
   Button,
   DatePicker,
@@ -19,19 +20,29 @@ import {
   Textarea,
 } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 export default function NewIDPForm({
   user_id,
   user_name,
+  loadData,
+  dataToLoad,
+  readOnly,
+  adminAccess,
 }: {
   user_id: string;
   user_name: string;
+  loadData?: boolean;
+  dataToLoad?: IDPFormType;
+  readOnly?: boolean;
+  adminAccess?: boolean;
 }) {
   const router = useRouter();
   const pathName = usePathname();
 
+  // const [targetScheduleOfCompletion, setDateOfLD] = useState<DateValue>();
   const [targetScheduleOfCompletion, setDateOfLD] = useState<DateValue>();
+
   //   const [previousLDDate, setPreviousLDDate] = useState<DateValue>();
 
   //   const username = getUserCookie();
@@ -46,8 +57,11 @@ export default function NewIDPForm({
     areasOfStrength: "",
     areasOfDevelopment: "",
     targetCompetencyTraining: "",
-    targetScheduleOfCompletion: new Date(),
-    formStatus: 0, // or set to `undefined` if you want it to be optional initially
+    targetScheduleOfCompletion: targetScheduleOfCompletion?.toDate(
+      getLocalTimeZone()
+    )!,
+    formStatus: 1, // or set to `undefined` if you want it to be optional initially
+    notedBy: "",
   });
 
   //   const [isFormValid, setIsFormValid] = useState(true);
@@ -65,22 +79,51 @@ export default function NewIDPForm({
   };
 
   const handleDateChange = (name: string, value: DateValue) => {
-    console.log(`${name} = ${value}`);
     setInputs((values) => ({
       ...values,
       [name]: value.toDate(getLocalTimeZone()),
     }));
   };
 
+  useEffect(() => {
+    if (loadData && dataToLoad) {
+      // Ensure the date string is in a proper ISO 8601 format
+      const targetDateStr = new Date(dataToLoad.targetScheduleOfCompletion)
+        .toISOString()
+        .split("T")[0];
+      const parsedDate = parseDate(targetDateStr);
+      setDateOfLD(parsedDate);
+      setInputs({
+        name: user_name,
+        submittedBy: user_id,
+        position: dataToLoad.position,
+        yearsInThePosition: dataToLoad.yearsInThePosition,
+        division: dataToLoad.division,
+        objectives: dataToLoad.objectives,
+        areasOfStrength: dataToLoad.areasOfStrength,
+        areasOfDevelopment: dataToLoad.areasOfDevelopment,
+        targetCompetencyTraining: dataToLoad.targetCompetencyTraining,
+        targetScheduleOfCompletion: parsedDate.toDate(getLocalTimeZone())!,
+        formStatus: dataToLoad.formStatus,
+        notedBy: dataToLoad.notedBy,
+      });
+    }
+  }, [loadData, dataToLoad]);
+
+  let StatusCode: number;
+
   const handleSubmit = async (event: FormEvent, onClose: () => void) => {
     event.preventDefault();
     if (await validateFormInput({ ...inputs })) {
       //   setIsFormValid(true);
-      await newIDPFormHandler({ ...inputs });
+      if (loadData) {
+        console.log("STATUS: ", StatusCode);
+        await changeStatus(dataToLoad?.id!, StatusCode);
+      } else {
+        await newIDPFormHandler({ ...inputs });
+      }
       onClose();
       router.push(pathName);
-    } else {
-      //   setIsFormValid(false);
     }
   };
 
@@ -88,7 +131,13 @@ export default function NewIDPForm({
     <ModalContent>
       {(onClose) => (
         <>
-          <ModalHeader>New Individual Personal Development Plan</ModalHeader>
+          {loadData ? (
+            <ModalHeader>
+              Review Individual Personal Development Plan
+            </ModalHeader>
+          ) : (
+            <ModalHeader>New Individual Personal Development Plan</ModalHeader>
+          )}
           <ModalBody>
             <form onSubmit={(e) => handleSubmit(e, onClose)}>
               <div className='flex flex-row justify-center items-center'>
@@ -108,6 +157,7 @@ export default function NewIDPForm({
                 <Input
                   id='position'
                   name='position'
+                  // isReadOnly
                   isRequired
                   value={inputs.position || ""}
                   onChange={handleInputChange}
@@ -120,6 +170,7 @@ export default function NewIDPForm({
                 <Input
                   id='yearsInThePosition'
                   name='yearsInThePosition'
+                  isReadOnly
                   isRequired
                   value={inputs.yearsInThePosition.toString() || ""}
                   onChange={handleInputChange}
@@ -137,6 +188,7 @@ export default function NewIDPForm({
                 <Input
                   id='division'
                   name='division'
+                  // isReadOnly
                   isRequired
                   value={inputs.division || ""}
                   onChange={handleInputChange}
@@ -150,6 +202,7 @@ export default function NewIDPForm({
                 <Textarea
                   id='objectives'
                   name='objectives'
+                  isReadOnly={readOnly}
                   isRequired
                   value={inputs.objectives || ""}
                   onChange={handleInputChange}
@@ -163,6 +216,7 @@ export default function NewIDPForm({
                 <Textarea
                   id='areasOfStrength'
                   name='areasOfStrength'
+                  isReadOnly={readOnly}
                   isRequired
                   value={inputs.areasOfStrength || ""}
                   onChange={handleInputChange}
@@ -176,6 +230,7 @@ export default function NewIDPForm({
                 <Textarea
                   id='areasOfDevelopment'
                   name='areasOfDevelopment'
+                  isReadOnly={readOnly}
                   isRequired
                   value={inputs.areasOfDevelopment || ""}
                   onChange={handleInputChange}
@@ -189,6 +244,7 @@ export default function NewIDPForm({
                 <Textarea
                   id='targetCompetencyTraining'
                   name='targetCompetencyTraining'
+                  isReadOnly={readOnly}
                   isRequired
                   value={inputs.targetCompetencyTraining || ""}
                   onChange={handleInputChange}
@@ -198,7 +254,7 @@ export default function NewIDPForm({
                   labelPlacement='outside'
                 ></Textarea>
               </div>
-              <div className='flex flex-row justify-start items-center mt-5'>
+              <div className='flex flex-row justify-center items-end mt-5'>
                 {/* <Textarea
                   id='targetCompetencyTraining'
                   name='targetCompetencyTraining'
@@ -213,6 +269,7 @@ export default function NewIDPForm({
                 <DatePicker
                   id='targetScheduleOfCompletion'
                   name='targetScheduleOfCompletion'
+                  isReadOnly={readOnly}
                   isRequired
                   label='Target Schedule Of Completion'
                   labelPlacement='outside'
@@ -224,15 +281,60 @@ export default function NewIDPForm({
                     setDateOfLD(date);
                     handleDateChange("targetScheduleOfCompletion", date);
                   }}
-                ></DatePicker>
+                />
+                <Spacer x={4}></Spacer>
+                <Input
+                  id='notedBy'
+                  name='notedBy'
+                  isReadOnly={readOnly}
+                  isRequired
+                  value={inputs.notedBy || ""}
+                  onChange={handleInputChange}
+                  placeholder='ex. Juan de la Cruz'
+                  label='Immediate Supervisor'
+                  size='md'
+                  labelPlacement='outside'
+                ></Input>
               </div>
               <ModalFooter>
-                <Button color='danger' variant='light' onPress={onClose}>
-                  Cancel
-                </Button>
-                <Button color='primary' type='submit'>
-                  Submit
-                </Button>
+                {loadData && dataToLoad && readOnly && !adminAccess ? (
+                  // <Button color='danger' variant='light' onPress={onClose}>
+                  //   Cancel
+                  // </Button>
+                  <></>
+                ) : (
+                  <Button color='danger' variant='light' onPress={onClose}>
+                    Cancel
+                  </Button>
+                )}
+                {loadData && dataToLoad && readOnly && adminAccess ? (
+                  <>
+                    <Button
+                      color='danger'
+                      type='submit'
+                      onPress={() => (StatusCode = 0)}
+                    >
+                      Deny
+                    </Button>
+                    <Button
+                      color='primary'
+                      type='submit'
+                      onPress={() => (StatusCode = 2)}
+                    >
+                      Approve
+                    </Button>
+                  </>
+                ) : loadData && dataToLoad && readOnly && !adminAccess ? (
+                  <>
+                    <Button color='danger' type='submit' onPress={onClose}>
+                      Close
+                    </Button>
+                  </>
+                ) : (
+                  <Button color='primary' type='submit'>
+                    Submit
+                  </Button>
+                )}
               </ModalFooter>
             </form>
           </ModalBody>
