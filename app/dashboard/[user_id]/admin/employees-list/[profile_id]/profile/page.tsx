@@ -37,6 +37,7 @@ export default function Page() {
     );
   }
 
+  console.log(userData);
   return (
     <div className='flex flex-col border-solid border- border-black'>
       <Profile data={userData}></Profile>

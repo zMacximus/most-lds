@@ -1,8 +1,8 @@
 "use server";
 import { Avatar } from "@nextui-org/react";
-import placeholderMan from "public/placeholder/Placeholder-Man.jpg";
+import placeholderMan from "public/placeholder/generic-user.png";
 import { getUserCookie } from "@/server/services/cookies";
-import User from "@/lib/models/User";
+import User, { getUserImage } from "@/lib/models/User";
 import { Op } from "sequelize";
 import { josefin } from "../fonts";
 
@@ -16,14 +16,13 @@ async function getName() {
 }
 
 export default async function WelcomeAvatar() {
+  const image = await getUserImage(getUserCookie()!);
+  const src = image ? image : placeholderMan.src;
+
   return (
     // <div className='flex-none'>
     <div className='flex flex-row justify-start items-center m-3 mr-5 border-solid border- border-black'>
-      <Avatar
-        src={placeholderMan.src}
-        name='Henry'
-        className='mr-2 drop-shadow-sm'
-      />
+      <Avatar src={src} name='Henry' className='mr-2 drop-shadow-sm' />
       <div className='flex flex-row justify-start items-center'>
         <p className='text-[1.5rem]'>Welcome back,</p>
         <p

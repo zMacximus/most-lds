@@ -1,5 +1,7 @@
+"use server";
 import { DataTypes, Op } from "sequelize";
 import db from "@/lib/sequelize";
+import { EmployeeFormInput } from "../definitions";
 
 const User = db.define(
   "User",
@@ -68,6 +70,9 @@ const User = db.define(
       type: DataTypes.DATEONLY(),
       allowNull: false,
     },
+    image: {
+      type: DataTypes.STRING(),
+    },
   },
   { freezeTableName: true }
 );
@@ -92,6 +97,7 @@ export type UserType = {
   religion: string;
   birthDay: string;
   joinDate: string;
+  image: string;
 };
 
 export async function findUserData(username: string): Promise<UserType | null> {
@@ -118,6 +124,7 @@ export async function findUserData(username: string): Promise<UserType | null> {
         birthDay: data?.getDataValue("birthDay"),
         joinDate: data?.getDataValue("joinDate"),
         admin: data?.getDataValue("admin"),
+        image: data?.getDataValue("image"),
       };
     });
 
@@ -162,6 +169,7 @@ export async function getAllUserData(query?: string): Promise<UserType[]> {
       birthDay: data.getDataValue("birthDay"),
       joinDate: data.getDataValue("joinDate"),
       admin: data.getDataValue("admin"),
+      image: data.getDataValue("image"),
     }));
 
     return users;
@@ -171,6 +179,54 @@ export async function getAllUserData(query?: string): Promise<UserType[]> {
       error
     );
     return [];
+  }
+}
+
+export async function dropEmployee(username: string) {
+  User.destroy({ where: { username: username } });
+}
+
+export async function updateEmployee(
+  username: string,
+  data: EmployeeFormInput
+) {
+  // Create the update object with mandatory fields
+  const updateData: any = {
+    email: data.email,
+    firstName: data.firstName,
+    lastName: data.lastName,
+    department: data.department,
+    title: data.title,
+    employmentStatus: data.employmentStatus,
+    phoneNumber: data.phoneNumber,
+    maritalStatus: data.maritalStatus,
+    address: data.address,
+    religion: data.religion,
+    birthDay: data.birthDay,
+    joinDate: data.joinDate,
+    admin: data.admin,
+  };
+
+  // Conditionally add the image field if it's not null
+  if (data.image !== null) {
+    updateData.image = data.image;
+  }
+
+  // Perform the update
+  await User.update(updateData, { where: { username: username } });
+}
+
+export async function getUserImage(username: string): Promise<string | null> {
+  try {
+    const user = await User.findOne({
+      attributes: ["image"],
+      where: { username: { [Op.like]: `%${username}%` } },
+    });
+
+    return user ? user.getDataValue("image") : null;
+  } catch (err) {
+    console.error("Error fetching user image", err);
+    return null;
   }
 }
 

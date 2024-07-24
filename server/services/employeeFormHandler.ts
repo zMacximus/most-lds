@@ -8,7 +8,7 @@ import { z } from "zod";
 const formInputSchema = z.object({
   firstName: z.string().min(1),
   lastName: z.string().min(1),
-  email: z.string().email(),
+  email: z.string(),
   password: z.string().min(1).optional(), // Optional because it might be generated/hashed later
   admin: z.boolean(),
   department: z.string().min(1),
@@ -20,6 +20,7 @@ const formInputSchema = z.object({
   religion: z.string().min(1),
   birthDay: z.date(), // Assuming it's a Date object
   joinDate: z.date(), // Assuming it's a Date object
+  image: z.any(),
 });
 
 export async function validateFormInput(formInput: EmployeeFormInput) {
@@ -62,7 +63,8 @@ export async function newEmployeeHandler(formInput: EmployeeFormInput) {
       joinDate: formInput.joinDate,
       employmentStatus: formInput.employmentStatus, // Default value; adjust as necessary
       phoneNumber: formInput.phoneNumber, // Placeholder; adjust as necessary
-      maritalStatus: formInput.maritalStatus, // Placeholder; adjust as necessary
+      maritalStatus: formInput.maritalStatus, // Placeholder; adjust as necessary,
+      image: formInput.image,
     });
 
     // Save the new user to the database

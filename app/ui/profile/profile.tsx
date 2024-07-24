@@ -15,16 +15,18 @@ import {
 import { Spacer } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
+import genericUser from "public/placeholder/generic-user.png";
 import placeholderMan from "public/placeholder/Placeholder-Man.jpg";
 
 export default function Profile({ data }: { data: UserType }) {
+  const src = data.image ? data.image : genericUser;
   return (
     <div className='flex flex-row'>
       <div className='flex flex-row w-[calc(100vh*0.5)] h-auto p-5 justify-center items-center bg-white rounded-3xl drop-shadow-md'>
         <div className='flex flex-col m-5 border-dashed border- border-red-600'>
           <Image
-            className='rounded-full drop-shadow-md'
-            src={placeholderMan}
+            className='rounded-full drop-shadow-md w-[200px] h-[200px]'
+            src={src}
             width={300}
             height={300}
             alt='Profile Picture'

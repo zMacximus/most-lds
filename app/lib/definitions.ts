@@ -90,6 +90,7 @@ export type IDPFormInput = {
 };
 
 export type EmployeeFormInput = {
+  username: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -104,6 +105,7 @@ export type EmployeeFormInput = {
   maritalStatus: string;
   admin: boolean;
   joinDate: Date;
+  image: string;
 };
 
 export type TopicFormInput = {
@@ -127,6 +129,7 @@ export type employeeListData = {
   lastName: any;
   department: any;
   title: any;
+  image: any;
 };
 
 export type TrainingFormInput = {

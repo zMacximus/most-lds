@@ -1,10 +1,11 @@
 "use client";
 import { EmployeeFormInput } from "@/lib/definitions";
+import { updateEmployee } from "@/lib/models/User";
 import {
   newEmployeeHandler,
   validateFormInput,
 } from "@/server/services/employeeFormHandler";
-import { getLocalTimeZone } from "@internationalized/date";
+import { getLocalTimeZone, parseDate } from "@internationalized/date";
 import {
   Button,
   DatePicker,
@@ -21,15 +22,22 @@ import {
 } from "@nextui-org/react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, FormEvent, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, Key, useEffect, useState } from "react";
 
-export default function NewEmployeeForm() {
+export default function NewEmployeeForm({
+  loadData,
+  dataToLoad,
+}: {
+  loadData?: boolean;
+  dataToLoad?: EmployeeFormInput;
+}) {
   const router = useRouter();
   const pathName = usePathname();
 
   const [birthday, setBirthDay] = useState<DateValue>();
   const [joinDate, setJoinDate] = useState<DateValue>();
-  const fileInput = useRef<HTMLInputElement>(null);
+  // const fileInput = useRef<HTMLInputElement>(null);
+  const [imgs, setImgs] = useState<string>("");
 
   const [inputs, setInputs] = useState<EmployeeFormInput>({
     firstName: "",
@@ -45,7 +53,41 @@ export default function NewEmployeeForm() {
     maritalStatus: "", // New field
     admin: false,
     joinDate: joinDate?.toDate(getLocalTimeZone())!,
+    //@ts-ignore
+    image: null,
   });
+
+  const handleProfileImageChange = (e: { target: { files: any[] } }) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        // Set the canvas dimensions to the image dimensions
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        // Draw the image on the canvas
+        ctx!.drawImage(img, 0, 0);
+
+        // Compress the image by exporting it with a lower quality setting (0.7)
+        const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.7);
+        setImgs(compressedDataUrl);
+      };
+      //@ts-ignore
+      img.src = event.target!.result;
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  // console.log(imgs); // compressed base64 img
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;
@@ -53,8 +95,13 @@ export default function NewEmployeeForm() {
     setInputs((values) => ({ ...values, [name]: value }));
   };
 
-  const handleSelectChange = (name: string, value: string) => {
-    setInputs((values) => ({ ...values, [name]: value }));
+  // const handleSelectChange = (name: string, value: string) => {
+  //   setInputs((values) => ({ ...values, [name]: value }));
+  // };
+
+  const handleSelectChange = (name: string, keys: Iterable<Key>) => {
+    const selectedValue = Array.from(keys).join(","); // Convert Iterable<Key> to string
+    setInputs((values) => ({ ...values, [name]: selectedValue }));
   };
 
   const handleDateChange = (name: string, value: DateValue) => {
@@ -70,8 +117,43 @@ export default function NewEmployeeForm() {
     setInputs((values) => ({ ...values, [name]: checked }));
   };
 
+  useEffect(() => {
+    if (loadData && dataToLoad) {
+      const data = dataToLoad;
+      setBirthDay(parseDate(data.birthDay.toString())); // assuming data.birthDay is a valid date string or Date object
+      setJoinDate(parseDate(data.joinDate.toString()));
+      setInputs({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email, // New field
+        birthDay: parseDate(data.birthDay.toString()).toDate(
+          getLocalTimeZone()
+        )!,
+        address: data.address,
+        religion: data.religion,
+        department: data.department,
+        title: data.title,
+        employmentStatus: data.employmentStatus, // New field
+        phoneNumber: data.phoneNumber, // New field
+        maritalStatus: data.maritalStatus, // New field
+        admin: data.admin,
+        joinDate: parseDate(data.joinDate.toString()).toDate(
+          getLocalTimeZone()
+        )!,
+        //@ts-ignore
+        image: null,
+      });
+    }
+  }, [loadData, dataToLoad]);
+
   const handleSubmit = async (event: FormEvent, onClose: () => void) => {
     event.preventDefault();
+
+    const updatedInputs = { ...inputs };
+    if (imgs) {
+      updatedInputs.image = imgs;
+    }
+
     const firstNameInitials = inputs.firstName
       .split(/[\s-]+/) // Split by spaces or hyphens
       .map((name) => name[0].toLowerCase())
@@ -84,27 +166,28 @@ export default function NewEmployeeForm() {
     const username = `${firstNameInitials}${lastNamePart}`;
 
     const formData = new FormData();
-    const file = fileInput?.current?.files?.[0]!;
-
-    formData.append("file", file);
     formData.append("username", username);
 
-    if (await validateFormInput({ ...inputs })) {
-      //   setIsFormValid(true);
-      await newEmployeeHandler({ ...inputs });
+    if (await validateFormInput(updatedInputs)) {
+      if (loadData) {
+        await updateEmployee(dataToLoad?.username!, updatedInputs);
+      } else {
+        await newEmployeeHandler(updatedInputs);
+      }
       onClose();
       router.push(pathName);
     }
-
-    // await newEmployeeHandler({ ...inputs });
-    // router.push(pathName);
   };
 
   return (
     <ModalContent>
       {(onClose) => (
         <>
-          <ModalHeader>New User Form</ModalHeader>
+          {loadData ? (
+            <ModalHeader>Edit User Form</ModalHeader>
+          ) : (
+            <ModalHeader>New User Form</ModalHeader>
+          )}
           <ModalBody>
             <form onSubmit={(e) => handleSubmit(e, onClose)}>
               <div className='flex flex-row justify-center items-center'>
@@ -114,8 +197,9 @@ export default function NewEmployeeForm() {
                     id='profileImage'
                     type='file'
                     name='file'
-                    ref={fileInput}
-                  ></input>
+                    //@ts-ignore
+                    onChange={handleProfileImageChange}
+                  />
                 </div>
                 <Spacer x={4}></Spacer>
                 <Input
@@ -205,9 +289,9 @@ export default function NewEmployeeForm() {
                   size='md'
                   labelPlacement='outside'
                   placeholder='ex. Operations'
-                  value={inputs.department}
-                  onChange={(value) =>
-                    handleSelectChange("department", value.target.value)
+                  selectedKeys={new Set([inputs.department])}
+                  onSelectionChange={(keys) =>
+                    handleSelectChange("department", keys)
                   }
                 >
                   <SelectItem key={"Admin"}>Admin</SelectItem>
@@ -237,9 +321,9 @@ export default function NewEmployeeForm() {
                   size='md'
                   labelPlacement='outside'
                   placeholder='ex. Permanent'
-                  value={inputs.employmentStatus}
-                  onChange={(value) =>
-                    handleSelectChange("employmentStatus", value.target.value)
+                  selectedKeys={new Set([inputs.employmentStatus])}
+                  onSelectionChange={(keys) =>
+                    handleSelectChange("employmentStatus", keys)
                   }
                 >
                   <SelectItem key={"Intern"}>Intern</SelectItem>
@@ -258,9 +342,9 @@ export default function NewEmployeeForm() {
                   size='md'
                   labelPlacement='outside'
                   placeholder='ex. Married'
-                  value={inputs.maritalStatus}
-                  onChange={(value) =>
-                    handleSelectChange("maritalStatus", value.target.value)
+                  selectedKeys={new Set([inputs.maritalStatus])}
+                  onSelectionChange={(keys) =>
+                    handleSelectChange("maritalStatus", keys)
                   }
                 >
                   <SelectItem key={"Single"}>Single</SelectItem>
@@ -277,9 +361,9 @@ export default function NewEmployeeForm() {
                   size='md'
                   labelPlacement='outside'
                   placeholder='ex. Islam'
-                  value={inputs.religion}
-                  onChange={(value) =>
-                    handleSelectChange("religion", value.target.value)
+                  selectedKeys={new Set([inputs.religion])}
+                  onSelectionChange={(keys) =>
+                    handleSelectChange("religion", keys)
                   }
                 >
                   <SelectItem key={"Islam"}>Islam</SelectItem>
@@ -311,6 +395,7 @@ export default function NewEmployeeForm() {
                     id='admin'
                     name='admin'
                     size='lg'
+                    isSelected={inputs.admin}
                     checked={inputs.admin}
                     onChange={handleSwitchChange}
                   />
