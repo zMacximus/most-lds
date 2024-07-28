@@ -5,25 +5,42 @@ import {
   EyeIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { AdminFormType } from "@/lib/models/AdminForm";
-import { getUserFullName } from "@/lib/models/User";
+import { AdminFormType, signColumnChecker } from "@/lib/models/AdminForm";
+import { getUserFullName, isUserAdmin } from "@/lib/models/User";
 import FormStatusBadge from "./form-status-badge";
 import { format } from "date-fns";
+import AccordionModalFormButton from "../e-lib/accordion-modal-button";
+import NewAdminLndForm from "./new-admin-lnd-form";
+import { getUserCookie } from "@/server/services/cookies";
 
 function formatDate(date: Date): string {
   return format(date, "MM-dd-yyyy");
 }
 
-export default function AdminFormItem({ dbData }: { dbData: AdminFormType[] }) {
+export default async function AdminFormItem({
+  dbData,
+  fullName,
+}: {
+  dbData: AdminFormType[];
+  fullName?: string;
+}) {
   // const pathName = usePathname();
-  if (dbData === undefined)
-    return <h1 className='text-5xl'>LOAD SOME DATA LMAO</h1>;
+  const adminStatus = await isUserAdmin(getUserCookie()!);
+  if (dbData.length <= 0)
+    return (
+      <div className='flex flex-row h-full w-full justify-center items-center'>
+        ERROR 404: Data Not Found
+      </div>
+    );
   return (
     <>
-      {dbData.map((data) => {
+      {dbData.map(async (data) => {
         // console.log(
         //   data.submissionDate + "________" + formatDate(data.submissionDate)
         // );
+
+        const signStatus = await signColumnChecker(fullName!, data.id);
+        console.log(signStatus);
         return (
           <>
             <div
@@ -56,7 +73,9 @@ export default function AdminFormItem({ dbData }: { dbData: AdminFormType[] }) {
               </div>
               <div className='p-2 flex flex-1 justify-center items-center border-dashed border- border-red-600'>
                 {/* {data.formStatus.toString()} */}
-                <FormStatusBadge status={data.formStatus}></FormStatusBadge>
+                <FormStatusBadge
+                  status={signStatus.signStatus!}
+                ></FormStatusBadge>
               </div>
               <div className='p-2 flex flex-1 justify-center items-center border-dashed border- border-red-600'>
                 <div className='flex flex-row'>
@@ -67,7 +86,17 @@ export default function AdminFormItem({ dbData }: { dbData: AdminFormType[] }) {
                     <InformationCircleIcon width={30}></InformationCircleIcon>
                   </Link>
                   <div className='px-2'></div> */}
-                  <Link href=''>
+                  <AccordionModalFormButton buttonIcon={"eye"}>
+                    <NewAdminLndForm
+                      user_id={""}
+                      loadData={true}
+                      dataToLoad={data}
+                      readOnly={true}
+                      adminStatus={adminStatus!}
+                      fullName={fullName}
+                    ></NewAdminLndForm>
+                  </AccordionModalFormButton>
+                  {/* <Link href=''>
                     <EyeIcon width={30}></EyeIcon>
                   </Link>
                   <div className='px-2'></div>
@@ -76,7 +105,7 @@ export default function AdminFormItem({ dbData }: { dbData: AdminFormType[] }) {
                       width={30}
                       className='text-danger-500'
                     ></TrashIcon>
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
             </div>

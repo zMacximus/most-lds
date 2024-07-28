@@ -73,6 +73,9 @@ export type AdminFormInput = {
   postFormSubmission: boolean;
   // formStatus: boolean;
   submittedBy: string;
+  sign1: string;
+  sign2: string;
+  sign3: string;
 };
 
 export type IDPFormInput = {

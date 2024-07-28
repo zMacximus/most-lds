@@ -1,10 +1,11 @@
 "use client";
 import { AdminFormInput } from "@/lib/definitions";
+import { AdminFormType, updateApproval } from "@/lib/models/AdminForm";
 import {
   newAdminFormHandler,
   validateFormInput,
 } from "@/server/services/adminFormHandler";
-import { getLocalTimeZone } from "@internationalized/date";
+import { getLocalTimeZone, parseDate } from "@internationalized/date";
 import {
   Button,
   Checkbox,
@@ -25,7 +26,7 @@ import {
   Switch,
 } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 const EMPLOYMENT_STATUS = [
   { item: "Permanent" },
@@ -61,7 +62,21 @@ const LD_TYPE = [
   { item: "ADD MORE IF MORE" },
 ];
 
-export default function NewAdminLndForm({ user_id }: { user_id: string }) {
+export default function NewAdminLndForm({
+  user_id,
+  loadData,
+  dataToLoad,
+  readOnly,
+  adminStatus,
+  fullName,
+}: {
+  user_id: string;
+  loadData?: boolean;
+  dataToLoad?: AdminFormType;
+  readOnly?: boolean;
+  adminStatus?: boolean;
+  fullName?: string;
+}) {
   const router = useRouter();
   const pathName = usePathname();
 
@@ -87,12 +102,15 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
     withinJobDesc: false,
     recentLD: false,
     previousLD: null,
-    previousLDDate: null,
+    previousLDDate: new Date(),
     previousLDVenue: null,
     prevLDPostFormSubmitted: null,
     postLDReEcho: false,
     postFormSubmission: false,
     submittedBy: user_id,
+    sign1: "",
+    sign2: "",
+    sign3: "",
   });
 
   //   const [isFormValid, setIsFormValid] = useState(true);
@@ -134,15 +152,64 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
     setInputs((values) => ({ ...values, [name]: value }));
   };
 
+  useEffect(() => {
+    if (loadData && dataToLoad) {
+      const d = dataToLoad;
+      setInputs({
+        employeeName: d.employeeName,
+        division: d.division,
+        position: d.position,
+        employmentStatus: d.employmentStatus,
+        officerInCharge: d.officerInCharge,
+        titleOfLD: d.titleOfLD,
+        dateOfLD: new Date(d.dateOfLD),
+        venue: d.venue,
+        numberOfHours: d.numberOfHours,
+        serviceProvider: d.serviceProvider,
+        modeOfLD: d.modeOfLD,
+        level: d.level,
+        natureOfParticipation: d.natureOfParticipation,
+        typeOfLD: d.typeOfLD,
+        sponsored: d.sponsored,
+        withinJobDesc: d.withinJobDesc,
+        recentLD: d.recentLD,
+        previousLD: d.previousLD,
+        previousLDDate: new Date(d.previousLDDate!),
+        previousLDVenue: d.previousLDVenue,
+        prevLDPostFormSubmitted: d.prevLDPostFormSubmitted,
+        postLDReEcho: d.postLDReEcho,
+        postFormSubmission: d.postFormSubmission,
+        submittedBy: d.submittedBy,
+        sign1: d.sign1,
+        sign2: d.sign2,
+        sign3: d.sign3,
+      });
+    }
+  }, [loadData, dataToLoad]);
+
+  let statusCode: number;
+
   const handleSubmit = async (event: FormEvent, onClose: () => void) => {
     event.preventDefault();
+    if (!inputs.recentLD) {
+      inputs.previousLD = null;
+      inputs.previousLDDate = null;
+      inputs.previousLDVenue = null;
+      inputs.prevLDPostFormSubmitted = null;
+    }
+
     if (await validateFormInput({ ...inputs })) {
       //   setIsFormValid(true);
-      await newAdminFormHandler({ ...inputs });
+      if (loadData) {
+        if (adminStatus) {
+          console.log(fullName);
+          await updateApproval(dataToLoad?.id!, fullName!, statusCode);
+        }
+      } else {
+        await newAdminFormHandler({ ...inputs });
+      }
       onClose();
       router.push(pathName);
-    } else {
-      //   setIsFormValid(false);
     }
   };
 
@@ -150,9 +217,15 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
     <ModalContent>
       {(onClose) => (
         <>
-          <ModalHeader>
-            New Learning and Development Participation Request Form
-          </ModalHeader>
+          {loadData ? (
+            <ModalHeader>
+              Review Learning and Development Participation Request Form
+            </ModalHeader>
+          ) : (
+            <ModalHeader>
+              New Learning and Development Participation Request Form
+            </ModalHeader>
+          )}
           <ModalBody>
             <form onSubmit={(e) => handleSubmit(e, onClose)}>
               <div className='flex flex-row justify-center items-center'>
@@ -160,6 +233,7 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                   id='employeeName'
                   name='employeeName'
                   isRequired
+                  isReadOnly={readOnly}
                   value={inputs.employeeName || ""}
                   onChange={handleInputChange}
                   placeholder='ex. Juan de la Cruz'
@@ -172,6 +246,7 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                   id='division'
                   name='division'
                   isRequired
+                  isReadOnly={readOnly}
                   value={inputs.division || ""}
                   onChange={handleInputChange}
                   placeholder='ex. Records Section'
@@ -184,6 +259,7 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                   id='position'
                   name='position'
                   isRequired
+                  isReadOnly={readOnly}
                   value={inputs.position || ""}
                   onChange={handleInputChange}
                   placeholder='ex. Records Officer II'
@@ -196,7 +272,9 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                   id='employmentStatus'
                   name='employmentStatus'
                   isRequired
+                  isDisabled={readOnly}
                   label='Employment Status'
+                  selectedKeys={[inputs.employmentStatus]}
                   size='md'
                   labelPlacement='outside'
                   placeholder='ex. Permanent'
@@ -218,6 +296,7 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                   id='officerInCharge'
                   name='officerInCharge'
                   isRequired
+                  isReadOnly={readOnly}
                   value={inputs.officerInCharge || ""}
                   onChange={handleInputChange}
                   placeholder='ex. Jose Laure'
@@ -230,6 +309,7 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                   id='titleOfLD'
                   name='titleOfLD'
                   isRequired
+                  isReadOnly={readOnly}
                   value={inputs.titleOfLD || ""}
                   onChange={handleInputChange}
                   placeholder='ex. Gender Sensitivity Training'
@@ -243,11 +323,12 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                   id='dateOfLD'
                   name='dateOfLD'
                   isRequired
+                  isReadOnly={readOnly}
                   label='Date of Activity'
                   labelPlacement='outside'
                   size='md'
                   className='max-w-[200px]'
-                  value={dateOfLD}
+                  value={parseDate(inputs.dateOfLD.toISOString().split("T")[0])}
                   onChange={(date) => {
                     setDateOfLD(date);
                     handleDateChange("dateOfLD", date);
@@ -257,6 +338,7 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                 <Input
                   id='venue'
                   name='venue'
+                  isReadOnly={readOnly}
                   isRequired
                   value={inputs.venue || ""}
                   onChange={handleInputChange}
@@ -270,6 +352,7 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                   id='numberOfHours'
                   name='numberOfHours'
                   isRequired
+                  isReadOnly={readOnly}
                   value={inputs.numberOfHours.toString() || ""}
                   onChange={handleInputChange}
                   placeholder='ex. 16'
@@ -288,6 +371,7 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                   id='serviceProvider'
                   name='serviceProvider'
                   isRequired
+                  isReadOnly={readOnly}
                   value={inputs.serviceProvider || ""}
                   onChange={handleInputChange}
                   placeholder='ex. Bangsamoro Women Commission'
@@ -302,6 +386,8 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                   id='modeOfLD'
                   name='modeOfLD'
                   isRequired
+                  isDisabled={readOnly}
+                  selectedKeys={[inputs.modeOfLD]}
                   label='Mode of the Activity'
                   size='md'
                   labelPlacement='outside'
@@ -323,6 +409,8 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                   id='level'
                   name='level'
                   isRequired
+                  isDisabled={readOnly}
+                  selectedKeys={[inputs.level]}
                   label='Level'
                   size='md'
                   labelPlacement='outside'
@@ -344,6 +432,8 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                   id='natureOfParticipation'
                   name='natureOfParticipation'
                   isRequired
+                  isDisabled={readOnly}
+                  selectedKeys={[inputs.natureOfParticipation]}
                   label='Nature of Participation'
                   size='md'
                   labelPlacement='outside'
@@ -365,6 +455,8 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                   id='typeOfLD'
                   name='typeOfLD'
                   isRequired
+                  isDisabled={readOnly}
+                  selectedKeys={[inputs.typeOfLD]}
                   label='Type of L&D'
                   size='md'
                   labelPlacement='outside'
@@ -387,6 +479,9 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                   id='sponsored'
                   name='sponsored'
                   isRequired
+                  isReadOnly={readOnly}
+                  isDisabled={readOnly}
+                  value={inputs.sponsored.toString()}
                   label='Is the L&D Activity sponsored by CSC/ a recognized or registered professional organization?'
                   orientation='horizontal'
                   onChange={(value) =>
@@ -402,6 +497,9 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                   id='withinJobDesc'
                   name='withinJobDesc'
                   isRequired
+                  isReadOnly={readOnly}
+                  isDisabled={readOnly}
+                  value={inputs.withinJobDesc.toString()}
                   label={`Is the nature of the L&D Activity within the participant's job description/office function or field of specialization?`}
                   orientation='horizontal'
                   onChange={(value) =>
@@ -417,6 +515,9 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                   id='recentLD'
                   name='recentLD'
                   isRequired
+                  isReadOnly={readOnly}
+                  isDisabled={readOnly}
+                  value={inputs.recentLD.toString()}
                   label='Has the official/employee previously attended an L&D Activity within the last three (3) months?'
                   orientation='horizontal'
                   onChange={(value) =>
@@ -435,6 +536,7 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                       id='previousLD'
                       name='previousLD'
                       //   isRequired
+                      isReadOnly={readOnly}
                       value={inputs.previousLD || ""}
                       onChange={handleInputChange}
                       placeholder='ex. Cultural & Ethnicity 01'
@@ -446,12 +548,15 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                     <DatePicker
                       id='previousLDDate'
                       name='previousLDDate'
+                      isReadOnly={readOnly}
                       //   isRequired
+                      value={parseDate(
+                        inputs.previousLDDate!.toISOString().split("T")[0]
+                      )}
                       label='Date'
                       labelPlacement='outside'
                       size='md'
                       className='max-w-[200px]'
-                      value={previousLDDate}
                       onChange={(date) => {
                         setPreviousLDDate(date);
                         handleDateChange("previousLDDate", date);
@@ -462,6 +567,7 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                       id='previousLDVenue'
                       name='previousLDVenue'
                       //   isRequired
+                      isReadOnly={readOnly}
                       value={inputs.previousLDVenue || ""}
                       onChange={handleInputChange}
                       placeholder='ex. Kidapawan City'
@@ -474,6 +580,7 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                     <RadioGroup
                       id='prevLDPostFormSubmitted'
                       name='prevLDPostFormSubmitted'
+                      isReadOnly={readOnly}
                       label='Post-Training Report Submitted?'
                       orientation='horizontal'
                       onChange={(value) =>
@@ -492,6 +599,7 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
               ) : null}
               <div className='flex flex-row justify-start items-center mt-5'>
                 <CheckboxGroup
+                  isReadOnly={readOnly}
                   label='Post Activity commitments'
                   orientation='horizontal'
                   value={[
@@ -525,15 +633,83 @@ export default function NewAdminLndForm({ user_id }: { user_id: string }) {
                   </Checkbox>
                 </CheckboxGroup>
               </div>
+              <div className='flex flex-row justify-center items-center mt-5'>
+                <Input
+                  id='sign1'
+                  name='sign1'
+                  isRequired
+                  isReadOnly={readOnly}
+                  value={inputs.sign1 || ""}
+                  onChange={handleInputChange}
+                  placeholder='ex. Jose Rizal'
+                  label='Reviewed and verified by'
+                  size='md'
+                  labelPlacement='outside'
+                ></Input>
+                <Spacer x={4}></Spacer>
+                <Input
+                  id='sign2'
+                  name='sign2'
+                  isRequired
+                  isReadOnly={readOnly}
+                  value={inputs.sign2 || ""}
+                  onChange={handleInputChange}
+                  placeholder='ex. Apolonario Mabini'
+                  label='Recommending Approval'
+                  size='md'
+                  labelPlacement='outside'
+                ></Input>
+                <Spacer x={4}></Spacer>
+                <Input
+                  id='sign3'
+                  name='sign3'
+                  isRequired
+                  isReadOnly={readOnly}
+                  value={inputs.sign3 || ""}
+                  onChange={handleInputChange}
+                  placeholder='ex. Andres Bonifacio'
+                  label='Approved by'
+                  size='md'
+                  labelPlacement='outside'
+                ></Input>
+              </div>
               <ModalFooter>
-                <Button color='danger' variant='light' onPress={onClose}>
-                  Cancel
-                </Button>
-                {/* <Button color='primary' type='submit' onPress={onClose}> */}
-                {/* CHAT GPT OVER HERE ONLY. HOW CAN I MAKE IT SO THAT MY FORM FOESNT CLOSE UNLESS THE FORM IS VALID? */}
-                <Button color='primary' type='submit'>
-                  Submit
-                </Button>
+                {loadData && dataToLoad && readOnly && adminStatus ? (
+                  <>
+                    <Button color='danger' variant='light' onPress={onClose}>
+                      Cancel
+                    </Button>
+                    <Button
+                      color='danger'
+                      type='submit'
+                      onPress={() => (statusCode = 0)}
+                    >
+                      Deny
+                    </Button>
+                    <Button
+                      color='primary'
+                      type='submit'
+                      onPress={() => (statusCode = 2)}
+                    >
+                      Approve
+                    </Button>
+                  </>
+                ) : loadData && dataToLoad && readOnly && !adminStatus ? (
+                  <>
+                    <Button color='danger' onPress={onClose}>
+                      Close
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button color='danger' variant='light' onPress={onClose}>
+                      Cancel
+                    </Button>
+                    <Button color='primary' type='submit'>
+                      Submit
+                    </Button>
+                  </>
+                )}
               </ModalFooter>
             </form>
           </ModalBody>

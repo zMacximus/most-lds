@@ -4,10 +4,11 @@ import EmployeeFormButton from "../modal-form-button";
 import SearchBar from "../searchbar";
 import CustomPagination from "../pagination";
 import ModalFormButton from "../modal-form-button";
-import NewAdminLndForm from "./new-admin-lnd-form";
 import { getUserCookie } from "@/server/services/cookies";
+import NewAdminLndForm from "../forms/new-admin-lnd-form";
+import { AdminFormType } from "@/lib/models/AdminForm";
 
-export default async function AdminFormTable({
+export default async function UserLDFormTable({
   children,
   tableHeaders,
   dbData,
@@ -15,7 +16,7 @@ export default async function AdminFormTable({
 }: {
   children: React.ReactNode;
   tableHeaders: string[];
-  dbData: any[];
+  dbData: AdminFormType[];
   currentPage: number;
 }) {
   return (
@@ -24,9 +25,9 @@ export default async function AdminFormTable({
         <div className='flex flex-row'>
           <SearchBar></SearchBar>
           <Spacer x={5}></Spacer>
-          {/* <ModalFormButton buttonName={"New Form"}>
+          <ModalFormButton buttonName={"New Form"}>
             <NewAdminLndForm user_id={getUserCookie()!}></NewAdminLndForm>
-          </ModalFormButton> */}
+          </ModalFormButton>
         </div>
         <div className='py-5 flex flex-row border-solid border- border-black'>
           {tableHeaders.map((header, index) => (

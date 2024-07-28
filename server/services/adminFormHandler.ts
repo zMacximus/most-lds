@@ -31,6 +31,12 @@ const formInputSchema = z.object({
   postFormSubmission: z.boolean(),
   // formStatus: boolean,
   submittedBy: z.string().min(1),
+  sign1: z.string().min(1),
+  // sign1Status: z.number(),
+  sign2: z.string().min(1),
+  // sign2Status: z.number(),
+  sign3: z.string().min(1),
+  // sign3Status: z.number(),
 });
 
 export async function validateFormInput(formInput: AdminFormInput) {
@@ -71,6 +77,12 @@ export async function newAdminFormHandler(formInput: AdminFormInput) {
       formStatus: 1,
       //   UserUsername: validatedInput.submittedBy,
       submittedBy: formInput.submittedBy,
+      sign1: formInput.sign1,
+      sign1Status: 1,
+      sign2: formInput.sign2,
+      sign2Status: 1,
+      sign3: formInput.sign3,
+      sign3Status: 1,
     });
 
     // Save the new user to the database

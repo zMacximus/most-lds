@@ -2,9 +2,14 @@ import CourseItem from "@/components/trainings/course-item";
 import Training from "@/lib/models/Training";
 import { Op } from "sequelize";
 import AdminFormTable from "@/components/forms/admin-form-table";
-import { getAllAdminForms } from "@/lib/models/AdminForm";
+import {
+  AdminFormType,
+  getAllAdminForms,
+  getAllUserLDForms,
+} from "@/lib/models/AdminForm";
 import AdminFormItem from "@/components/forms/admin-form-item";
-import { getUserFullName, isUserAdmin } from "@/lib/models/User";
+import UserLDFormTable from "@/components/development-plan/user-ld-form-table";
+import UserLDFormItem from "@/components/development-plan/user-ld-form-item";
 import { getUserCookie } from "@/server/services/cookies";
 
 export default async function Page({
@@ -18,16 +23,21 @@ export default async function Page({
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
 
-  const fullName = await getUserFullName(getUserCookie()!);
-  console.log("Page: ", fullName);
+  // Get user cookie
+  const userCookie = getUserCookie();
 
-  const dbData = await getAllAdminForms(query, fullName!);
+  // Fetch data if user cookie is available
+  let dbData: AdminFormType[] = [];
+  if (userCookie) {
+    dbData = await getAllUserLDForms(userCookie);
+  }
 
-  function getDataForPage(pageNumber: number, data: any[]) {
+  function getDataForPage(pageNumber: number, data: AdminFormType[]) {
     const startIndex = (pageNumber - 1) * 5;
     const endIndex = startIndex + 5;
     return data.slice(startIndex, endIndex);
   }
+
   const headers = [
     "L&D Title",
     "Employee",
@@ -38,17 +48,15 @@ export default async function Page({
     "Action",
   ];
 
-  // const adminStatus = await isUserAdmin(getUserCookie()!)
   return (
-    <AdminFormTable
+    <UserLDFormTable
       tableHeaders={headers}
       dbData={dbData}
       currentPage={currentPage}
     >
-      <AdminFormItem
-        fullName={fullName!}
+      <UserLDFormItem
         dbData={getDataForPage(currentPage, dbData)}
-      ></AdminFormItem>
-    </AdminFormTable>
+      ></UserLDFormItem>
+    </UserLDFormTable>
   );
 }
