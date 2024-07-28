@@ -1,31 +1,28 @@
 "use client";
-import { Scheduler } from "@bitnoi.se/react-scheduler";
+import { Scheduler, SchedulerData } from "@bitnoi.se/react-scheduler";
 import { SCHEDULER_DATA } from "@/lib/mock_data";
 import { Skeleton } from "@nextui-org/react";
+import { Suspense } from "react";
+import SchedulerLoading from "../scheduler/scheduler-loading";
 
-export default function HomeScheduler() {
+export default function HomeScheduler({ data }: { data?: SchedulerData }) {
   return (
-    // <div className='flex flex-grow-1 w-full h-full border-solid border-1 border-gray-300  m-1'>
-    // <Skeleton
-    //   isLoaded={true}
-    //   className='relative w-[auto] min-h-[530px] max-h-[530px] mx-5 mt-2 border-1.5 border-solid border-gray-400'
-    // >
     <>
-      <div className='flex flex-col mb-2.5 justify-center items-center overflow-hidden pb-[56.25%] pt-[25px] h-0 relative'>
-        <div className='w-full h-full absolute top-0 left-0'>
-          <Scheduler
-            isLoading
-            data={SCHEDULER_DATA}
-            config={{
-              zoom: 1,
-              filterButtonState: -1,
-              includeTakenHoursOnWeekendsInDayView: false,
-              maxRecordsPerPage: 5,
-            }}
-          ></Scheduler>
+      <Suspense fallback={<SchedulerLoading />}>
+        <div className='flex flex-col mb-2.5 justify-center items-center overflow-hidden pb-[56.25%] pt-[25px] h-0 relative'>
+          <div className='w-full h-full absolute top-0 left-0'>
+            <Scheduler
+              data={data ? data : []}
+              config={{
+                zoom: 0,
+                filterButtonState: -1,
+                includeTakenHoursOnWeekendsInDayView: false,
+                maxRecordsPerPage: 5,
+              }}
+            ></Scheduler>
+          </div>
         </div>
-      </div>
+      </Suspense>
     </>
-    // </Skeleton>
   );
 }

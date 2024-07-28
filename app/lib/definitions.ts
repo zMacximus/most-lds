@@ -118,6 +118,17 @@ export type TopicFormInput = {
   createdBy: string;
 };
 
+export type ScheduleFormInput = {
+  // id: number;
+  // icon: string;
+  title: string;
+  subtitle: string;
+  startDate: Date;
+  endDate: Date;
+  description: string;
+  // status: number;
+};
+
 export type SubTopicFormInput = {
   mainTopicId: number;
   subTopicTitle: string;

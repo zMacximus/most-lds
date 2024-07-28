@@ -2,6 +2,7 @@
 import { SubTopicFormInput } from "@/lib/definitions";
 import { dropIDP } from "@/lib/models/IDPForm";
 import { dropTopic } from "@/lib/models/MainTopic";
+import { dropSchedule } from "@/lib/models/Schedule";
 import { dropSubTopic } from "@/lib/models/SubTopic";
 import { dropTraining } from "@/lib/models/Training";
 import { dropEmployee } from "@/lib/models/User";
@@ -32,7 +33,14 @@ export default function DeleteContentForm({
   categoryName?: string;
   content_id: number;
   user_id: string;
-  contentType: "topic" | "subtopic" | "training" | "user" | "idp" | "ldform"; //expand later to work with the rest of the tables that need deletion
+  contentType:
+    | "topic"
+    | "subtopic"
+    | "training"
+    | "user"
+    | "idp"
+    | "ldform"
+    | "schedule"; //expand later to work with the rest of the tables that need deletion
 }) {
   const router = useRouter();
   const pathName = usePathname();
@@ -50,6 +58,7 @@ export default function DeleteContentForm({
     if (contentType === "training") await dropTraining(content_id);
     if (contentType === "user") await dropEmployee(user_id);
     if (contentType === "idp") await dropIDP(content_id);
+    if (contentType === "schedule") await dropSchedule(content_id);
     // if (contentType === "ldform") await dropLD(content_id);
     onClose();
     router.push(pathName);
