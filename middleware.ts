@@ -1,4 +1,6 @@
+// "use server";
 // import { isUserAdmin } from "@/lib/models/User";
+import { isUserAdmin } from "@/lib/models/User";
 import { NextRequest, NextResponse } from "next/server";
 
 export default function middleware(request: NextRequest) {
@@ -30,14 +32,14 @@ export default function middleware(request: NextRequest) {
     }
   }
 
-  // if (request.nextUrl.pathname.startsWith("/admin")) {
-  //   // const isAdmin = isUserAdmin(request?.cookies?.get("user_id")?.value!);
-  //   const isAdmin = false;
+  if (request.nextUrl.pathname.includes("/admin")) {
+    // const isAdmin = await isUserAdmin(request?.cookies?.get("user_id")?.value!);
+    const isAdmin = request.cookies.has("admin");
 
-  //   if (!isAdmin) {
-  //     return NextResponse.redirect(new URL("/dashboard"));
-  //   }
-  // }
+    if (!isAdmin) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+  }
 }
 
 export const config = {

@@ -1,6 +1,7 @@
 "use server";
 import CourseCard from "@/components/trainings/course-card";
 import { getAllTrainings, TrainingType } from "@/lib/models/Training";
+import { Spacer } from "@nextui-org/react";
 
 export default async function Page() {
   const dbData = await getAllTrainings();
@@ -9,6 +10,7 @@ export default async function Page() {
       <div className='flex flex-row'>
         <p className='text-[1.5rem] ml-5 mt-2'>Your Trainings</p>
       </div>
+      {/* <Spacer y={1}></Spacer> */}
       <div className='flex flex-row border-solid border- border-blue-400 px-5 mb-4 flex-wrap -mt-2'>
         <CourseCard dbData={dbData!}></CourseCard>
       </div>

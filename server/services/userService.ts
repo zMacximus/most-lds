@@ -3,7 +3,7 @@ import User from "@/lib/models/User";
 import db from "@/lib/sequelize";
 import { Op } from "sequelize";
 import { z } from "zod";
-import { authCookie, userCookie } from "./cookies";
+import { adminCookie, authCookie, userCookie } from "./cookies";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -24,6 +24,7 @@ async function matchCreds(username: string, password: string) {
     });
     if (password !== user?.getDataValue("password")) return null;
     userCookie(username);
+    adminCookie(user.getDataValue("admin"));
 
     return {
       username: user?.getDataValue("username"),
@@ -60,6 +61,8 @@ async function authenticate(username: string, password: string) {
 export async function signOut() {
   authCookie(false);
   cookies().delete("user_id");
+
+  cookies().delete("admin");
   redirect("/login");
   // useRouter().push('/login')
 }

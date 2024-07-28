@@ -31,3 +31,17 @@ export function getUserCookie() {
 
   return cookies()?.get("user_id")?.value as string;
 }
+
+export function adminCookie(isAdmin: number) {
+  const cookie = cookies().set("admin", isAdmin.toString(), {
+    secure: true,
+    httpOnly: true,
+  });
+  return cookie;
+}
+
+export function getAdminCookie() {
+  if (!cookies().has("admin")) return;
+
+  return cookies()?.get("admin")?.value as string;
+}
