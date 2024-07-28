@@ -6,17 +6,20 @@ import CustomPagination from "../pagination";
 import ModalFormButton from "../modal-form-button";
 import NewEmployeeForm from "../employees/new-eployee-form";
 import NewScheduleForm from "./new-schedule-form";
+import { TrainingType } from "@/lib/models/Training";
 
 export default async function ScheduleTable({
   children,
   tableHeaders,
   dbData,
   currentPage,
+  fieldData,
 }: {
   children: React.ReactNode;
   tableHeaders: string[];
   dbData: any[];
   currentPage: number;
+  fieldData: TrainingType[];
 }) {
   return (
     <div className='p-5 flex flex-row w-full h-[calc(100vh*0.8)] bg-white drop-shadow-md rounded-3xl border-dashed border- border-green-600'>
@@ -25,7 +28,11 @@ export default async function ScheduleTable({
           <SearchBar></SearchBar>
           <Spacer x={5}></Spacer>
           <ModalFormButton buttonName={"Add Schedule"}>
-            <NewScheduleForm categoryName={""} user_id={""}></NewScheduleForm>
+            <NewScheduleForm
+              categoryName={""}
+              user_id={""}
+              fieldData={fieldData}
+            ></NewScheduleForm>
           </ModalFormButton>
         </div>
         <div className='py-5 flex flex-row border-solid border- border-black'>

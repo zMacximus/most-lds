@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 "use server";
 import { DataTypes, Op } from "sequelize";
 import db from "@/lib/sequelize";
@@ -216,7 +214,6 @@ export async function updateApproval(
   approval: number
 ) {
   try {
-    console.log(userName);
     // Find the form by id
     const form = await AdminForm.findByPk(id);
     if (!form) {
@@ -235,9 +232,23 @@ export async function updateApproval(
     if (form.sign3 === userName) {
       form.sign3Status = approval;
     }
+    // else {
+    //   throw new Error(`User name ${userName} not found in any sign column`);
+    // }
 
-    if (!form.sign1 && !form.sign2 && !form.sign3) {
-      throw new Error(`User name ${userName} not found in any sign column`);
+    // Check all sign statuses to determine form status
+    const allSignStatuses = [
+      form.sign1Status,
+      form.sign2Status,
+      form.sign3Status,
+    ];
+
+    if (allSignStatuses.includes(0)) {
+      form.formStatus = 0; // Set formStatus to Denied if any signStatus is Denied
+    } else if (allSignStatuses.every((status) => status === 2)) {
+      form.formStatus = 2; // Set formStatus to Approved if all signStatuses are Approved
+    } else {
+      form.formStatus = 1; // Optionally set to Pending if not all are Approved or Denied
     }
 
     // Save the changes

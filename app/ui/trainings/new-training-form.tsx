@@ -30,17 +30,51 @@ export default function NewTrainingForm({
   const router = useRouter();
   const pathName = usePathname();
 
+  const [imgs, setImgs] = useState<string>("");
+
   const [inputs, setInputs] = useState<TrainingFormInput>({
     title: "",
     code: "",
     modality: "",
     instructor: "",
-    maxPopulation: Number(),
+    maxPopulation: 999, //maxpopulation is disabled for now in the inputs and wont be referenced anywhere else unless needed
     status: false,
     url: "",
+    image: "",
   });
 
+  const handleProfileImageChange = (e: { target: { files: any[] } }) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        // Set the canvas dimensions to the image dimensions
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        // Draw the image on the canvas
+        ctx!.drawImage(img, 0, 0);
+
+        // Compress the image by exporting it with a lower quality setting (0.7)
+        const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.7);
+        setImgs(compressedDataUrl);
+      };
+      //@ts-ignore
+      img.src = event.target!.result;
+    };
+
+    reader.readAsDataURL(file);
+  };
+
   useEffect(() => {
+    console.log(imgs);
     if (loadData && dataToLoad) {
       setInputs({
         title: dataToLoad.title,
@@ -50,6 +84,7 @@ export default function NewTrainingForm({
         maxPopulation: dataToLoad.maxPopulation,
         status: Boolean(dataToLoad.status),
         url: dataToLoad.url,
+        image: dataToLoad.image,
       });
     }
   }, [loadData, dataToLoad]);
@@ -76,11 +111,17 @@ export default function NewTrainingForm({
 
   const handleSubmit = async (event: FormEvent, onClose: () => void) => {
     event.preventDefault();
-    if (await validateFormInput({ ...inputs })) {
+
+    const updatedInputs = { ...inputs };
+    if (imgs) {
+      updatedInputs.image = imgs;
+    }
+
+    if (await validateFormInput({ ...updatedInputs })) {
       if (loadData) {
-        await updateTraining(dataToLoad?.id!, { ...inputs });
+        await updateTraining(dataToLoad?.id!, { ...updatedInputs });
       } else {
-        await newTrainingHandler({ ...inputs });
+        await newTrainingHandler({ ...updatedInputs });
       }
       onClose();
       router.push(pathName);
@@ -99,6 +140,17 @@ export default function NewTrainingForm({
           <ModalBody>
             <form onSubmit={(e) => handleSubmit(e, onClose)}>
               <div className='flex flex-row justify-center items-center'>
+                <div className='flex flex-col flex-shrink border-soli border- border-black'>
+                  <label className='mb-4 text-sm'>Cover Picture</label>
+                  <input
+                    id='coverImage'
+                    type='file'
+                    name='file'
+                    //@ts-ignore
+                    onChange={handleProfileImageChange}
+                  />
+                </div>
+                <Spacer x={4}></Spacer>
                 <Input
                   id='title'
                   name='title'
@@ -150,7 +202,7 @@ export default function NewTrainingForm({
                   <SelectItem key={"On-Site"}>On-Site</SelectItem>
                   <SelectItem key={"Online"}>Online</SelectItem>
                 </Select>
-                <Spacer x={4} />
+                {/* <Spacer x={4} />
                 <Input
                   id='maxPopulation'
                   name='maxPopulation'
@@ -161,7 +213,7 @@ export default function NewTrainingForm({
                   label='Max Members'
                   size='md'
                   labelPlacement='outside'
-                />
+                /> */}
               </div>
               <div className='flex flex-row justify-start items-center mt-5'>
                 <Input

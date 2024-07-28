@@ -1,6 +1,7 @@
 "use client";
 import { ScheduleFormInput } from "@/lib/definitions";
 import { ScheduleType, updateSchedule } from "@/lib/models/Schedule";
+import { TrainingType } from "@/lib/models/Training";
 import {
   newScheduleHandler,
   validateFormInput,
@@ -15,6 +16,8 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  Select,
+  SelectItem,
   Spacer,
 } from "@nextui-org/react";
 import { usePathname } from "next/navigation";
@@ -24,11 +27,13 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 export default function NewScheduleForm({
   categoryName,
   user_id,
+  fieldData,
   loadData,
   dataToLoad,
 }: {
   categoryName: string;
   user_id: string;
+  fieldData: TrainingType[];
   loadData?: boolean;
   dataToLoad?: ScheduleType;
 }) {
@@ -47,6 +52,7 @@ export default function NewScheduleForm({
     description: "",
     startDate: new Date(),
     endDate: new Date(),
+    training_id: Number(),
   });
 
   const handleDateChange = (name: string, value: DateValue) => {
@@ -65,6 +71,7 @@ export default function NewScheduleForm({
         description: dataToLoad.description,
         startDate: new Date(dataToLoad.startDate),
         endDate: new Date(dataToLoad.endDate),
+        training_id: dataToLoad.training_id,
       });
     }
   }, [loadData, dataToLoad]);
@@ -75,9 +82,20 @@ export default function NewScheduleForm({
     setInputs((values) => ({ ...values, [name]: value }));
   };
 
+  const selectTrainingHandler = (event: any, code: string, id: number) => {
+    setInputs((values) => ({ ...values, subtitle: code, training_id: id }));
+  };
+
+  const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    console.log(`${name} = ${value}`);
+    setInputs((values) => ({ ...values, [name]: value }));
+  };
+
   const handleSubmit = async (event: FormEvent, onClose: () => void) => {
     event.preventDefault();
-
+    console.log({ ...inputs });
     if (await validateFormInput({ ...inputs })) {
       //   setIsFormValid(true);
       if (loadData) {
@@ -102,44 +120,33 @@ export default function NewScheduleForm({
           <ModalBody>
             <form onSubmit={(e) => handleSubmit(e, onClose)}>
               <div className='flex flex-row justify-center items-center'>
-                <Input
+                <Select
+                  items={fieldData}
+                  selectedKeys={inputs.title != "" ? [inputs.title] : undefined}
+                  onChange={(event) =>
+                    handleSelectChange(event as ChangeEvent<HTMLSelectElement>)
+                  }
                   id='title'
                   name='title'
-                  isRequired
-                  value={inputs.title}
-                  onChange={handleInputChange}
-                  placeholder='ex. Gender Sensitivity Training'
+                  placeholder='Select Training'
                   label='Training Title'
                   size='md'
                   labelPlacement='outside'
-                ></Input>
+                  isRequired
+                >
+                  {(item) => (
+                    <SelectItem
+                      key={`${item.title}`}
+                      onPress={(e) =>
+                        selectTrainingHandler(e, item.code, item.id)
+                      }
+                      // value={`${item.title}_${item.code}_${item.id}`}
+                    >
+                      {item.title}
+                    </SelectItem>
+                  )}
+                </Select>
                 <Spacer x={4}></Spacer>
-                <Input
-                  id='subtitle'
-                  name='subtitle'
-                  // isRequired
-                  value={inputs.subtitle}
-                  onChange={handleInputChange}
-                  placeholder='ex. Course Code'
-                  label='Subtitle (Optional)'
-                  size='md'
-                  labelPlacement='outside'
-                ></Input>
-              </div>
-              <div className='flex flex-row justify-center items-center mt-5'>
-                <Input
-                  id='description'
-                  name='description'
-                  // isRequired
-                  value={inputs.description}
-                  onChange={handleInputChange}
-                  placeholder='ex. Short Description'
-                  label='Description (Optional)'
-                  size='md'
-                  labelPlacement='outside'
-                ></Input>
-              </div>
-              <div className='flex flex-row justify-center items-center mt-5'>
                 <DatePicker
                   id='startDate'
                   name='startDate'
@@ -171,7 +178,65 @@ export default function NewScheduleForm({
                   size='md'
                   labelPlacement='outside'
                 ></DatePicker>
+                {/* <Spacer x={4}></Spacer>
+                <Input
+                  id='subtitle'
+                  name='subtitle'
+                  // isRequired
+                  value={inputs.subtitle}
+                  onChange={handleInputChange}
+                  placeholder='ex. Course Code'
+                  label='Subtitle (Optional)'
+                  size='md'
+                  labelPlacement='outside'
+                ></Input> */}
               </div>
+              {/* <div className='flex flex-row justify-center items-center mt-5'>
+                <Input
+                  id='description'
+                  name='description'
+                  // isRequired
+                  value={inputs.description}
+                  onChange={handleInputChange}
+                  placeholder='ex. Short Description'
+                  label='Description (Optional)'
+                  size='md'
+                  labelPlacement='outside'
+                ></Input>
+              </div> */}
+              {/* <div className='flex flex-row justify-center items-center mt-5'>
+                <DatePicker
+                  id='startDate'
+                  name='startDate'
+                  isRequired
+                  value={parseDate(
+                    inputs.startDate.toISOString().split("T")[0]
+                  )}
+                  onChange={(date) => {
+                    setStartDate(date);
+                    handleDateChange("startDate", date);
+                  }}
+                  // placeholder='ex. Gender Sensitivity Training'
+                  label='Start Date'
+                  size='md'
+                  labelPlacement='outside'
+                ></DatePicker>
+                <Spacer x={4}></Spacer>
+                <DatePicker
+                  id='endDate'
+                  name='endDate'
+                  isRequired
+                  value={parseDate(inputs.endDate.toISOString().split("T")[0])}
+                  onChange={(date) => {
+                    setEndDate(date);
+                    handleDateChange("endDate", date);
+                  }}
+                  // placeholder='ex. Course Code'
+                  label='End Date'
+                  size='md'
+                  labelPlacement='outside'
+                ></DatePicker>
+              </div> */}
               <ModalFooter>
                 <Button color='danger' variant='light' onPress={onClose}>
                   Cancel

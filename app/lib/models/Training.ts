@@ -53,6 +53,9 @@ const Training = db.define(
       type: DataTypes.STRING(),
       allowNull: false,
     },
+    image: {
+      type: DataTypes.STRING(),
+    },
   },
   { freezeTableName: true }
 );
@@ -73,6 +76,7 @@ export type TrainingType = {
   instructor: string;
   status: string;
   url: string;
+  image: string;
 };
 
 export async function dropTraining(id: number) {
@@ -84,18 +88,21 @@ export async function updateTraining(
   data: TrainingFormInput
 ) {
   try {
-    await Training.update(
-      {
-        code: data.code,
-        title: data.title,
-        modality: data.modality,
-        maxPopulation: data.maxPopulation,
-        instructor: data.instructor,
-        status: data.status,
-        url: data.url,
-      },
-      { where: { id: trainingId } }
-    );
+    const updateData: any = {
+      code: data.code,
+      title: data.title,
+      modality: data.modality,
+      maxPopulation: data.maxPopulation,
+      instructor: data.instructor,
+      status: data.status,
+      url: data.url,
+    };
+
+    if (data.image !== null) {
+      updateData.image = data.image;
+    }
+
+    await Training.update(updateData, { where: { id: trainingId } });
   } catch (error) {
     console.error("Error: updating training:", error);
   }
@@ -115,6 +122,7 @@ export async function getAllTrainings() {
           instructor: data.getDataValue("instructor"),
           status: data.getDataValue("status"),
           url: data.getDataValue("url"),
+          image: data.getDataValue("image"),
         }));
       })
       .catch((error) => {

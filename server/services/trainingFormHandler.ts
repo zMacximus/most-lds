@@ -13,6 +13,7 @@ const formInputSchema = z.object({
   maxPopulation: z.number(),
   status: z.boolean(),
   url: z.string().min(1),
+  image: z.string().min(1).optional(),
 });
 
 export async function validateFormInput(formInput: TrainingFormInput) {
@@ -30,6 +31,7 @@ export async function newTrainingHandler(formInput: TrainingFormInput) {
       instructor: formInput.instructor,
       status: formInput.status,
       url: formInput.url,
+      image: formInput.image,
     });
 
     // Save the new user to the database

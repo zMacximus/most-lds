@@ -51,7 +51,7 @@ export default async function Page({
     const endIndex = startIndex + 5;
     return data.slice(startIndex, endIndex);
   }
-  const headers = ["Code", "Title", "Modality", "Status", "Members", "Action"];
+  const headers = ["Code", "Title", "Modality", "Status", "Action"];
 
   return (
     <TrainingTable

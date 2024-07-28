@@ -4,8 +4,11 @@ import HomeScheduler from "@/components/home/scheduler";
 import WelcomeAvatar from "@/components/home/avatar-welcome";
 import { Spacer } from "@nextui-org/spacer";
 import SmallCourse from "@/components/profile/course-small";
+import { getUserTrainingsForScheduler } from "@/lib/models/Schedule";
+import { getUserCookie } from "@/server/services/cookies";
 
 export default async function Page() {
+  const schedulerData = await getUserTrainingsForScheduler(getUserCookie()!);
   return (
     <div className='flex flex-col'>
       <div className='flex flex-row'>
@@ -20,13 +23,13 @@ export default async function Page() {
           <div className='flex flex-col w-full h-full border-solid border- border-black'>
             <div className='text-[1.5rem] ml-5'>Scheduler</div>
             <div className='p-1.5'>
-              <HomeScheduler></HomeScheduler>
+              <HomeScheduler data={schedulerData}></HomeScheduler>
             </div>
           </div>
-          <div className='flex flex-col h-[calc(100vh*.8)] border-solid border- border-black'>
+          {/* <div className='flex flex-col h-[calc(100vh*.8)] border-solid border- border-black'>
             <div className='text-[1.5rem]'>Upcoming</div>
             <Upcoming />
-          </div>
+          </div> */}
         </div>
       </div>
       <Spacer y={5}></Spacer>

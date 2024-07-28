@@ -40,9 +40,9 @@ export default async function CourseItem({
               <div className='p-2 flex flex-1 justify-center items-center border-dashed border- border-red-600'>
                 <StatusBadge status={Boolean(data.status)}></StatusBadge>
               </div>
-              <div className='p-2 flex flex-1 justify-center items-center border-dashed border- border-red-600'>
+              {/* <div className='p-2 flex flex-1 justify-center items-center border-dashed border- border-red-600'>
                 {data.currentPopulation}/{data.maxPopulation}
-              </div>
+              </div> */}
               <div className='p-2 flex flex-1 justify-center items-center border-dashed border- border-red-600'>
                 <div className='flex flex-row'>
                   <AccordionModalFormButton buttonIcon={"pencil"}>

@@ -13,13 +13,20 @@ import DeleteContentForm from "../e-lib/delete-content-modal";
 import NewScheduleForm from "./new-schedule-form";
 import { ScheduleType } from "@/lib/models/Schedule";
 import { format } from "date-fns";
+import { TrainingType } from "@/lib/models/Training";
 // import { useState } from "react";
 
 function formatDate(date: Date): string {
   return format(date, "MM-dd-yyyy");
 }
 
-export default function SchedulerItem({ dbData }: { dbData: ScheduleType[] }) {
+export default function SchedulerItem({
+  dbData,
+  fieldData,
+}: {
+  dbData: ScheduleType[];
+  fieldData: TrainingType[];
+}) {
   // console.log(placeholderMan.src);
   // const searchParams = new URLSearchParams();
   const router = useRouter();
@@ -55,6 +62,7 @@ export default function SchedulerItem({ dbData }: { dbData: ScheduleType[] }) {
                     <NewScheduleForm
                       loadData={true}
                       dataToLoad={data}
+                      fieldData={fieldData}
                       categoryName={""}
                       user_id={""}
                     ></NewScheduleForm>

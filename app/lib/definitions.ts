@@ -127,6 +127,7 @@ export type ScheduleFormInput = {
   endDate: Date;
   description: string;
   // status: number;
+  training_id: number;
 };
 
 export type SubTopicFormInput = {
@@ -155,6 +156,7 @@ export type TrainingFormInput = {
   maxPopulation: number;
   status: boolean;
   url: string;
+  image: string;
 };
 
 export type trainingListData = {

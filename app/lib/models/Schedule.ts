@@ -4,6 +4,8 @@ import db from "@/lib/sequelize";
 import { ScheduleFormInput } from "../definitions";
 import { icons } from "../nav-links";
 import { SchedulerData } from "@bitnoi.se/react-scheduler";
+import { EnrolledTrainings, EnrollmentType } from "./EnrolledTrainings";
+import Training, { TrainingType } from "./Training";
 
 // Define the Schedule model
 export const Schedule = db.define(
@@ -32,6 +34,10 @@ export const Schedule = db.define(
       type: DataTypes.STRING(),
       allowNull: true,
     },
+    training_id: {
+      type: DataTypes.INTEGER(),
+      allowNull: false,
+    },
     // status: { type: DataTypes.INTEGER(), allowNull: false },
   },
   { freezeTableName: true }
@@ -48,6 +54,7 @@ export type ScheduleType = {
   startDate: Date;
   endDate: Date;
   description: string;
+  training_id: number;
   //   status: number;
 };
 
@@ -97,6 +104,7 @@ export async function getAllSchedule(): Promise<ScheduleType[]> {
           startDate: data.getDataValue("startDate"),
           endDate: data.getDataValue("endDate"),
           description: data.getDataValue("description"),
+          training_id: data.getDataValue("training_id"),
           // status: data.getDataValue('status'),
         }));
       }
@@ -161,5 +169,109 @@ export async function formatScheduleData() {
   } catch (error) {
     console.error("Error formatting schedule data:", error);
     throw error; // Rethrow the error to propagate it upwards
+  }
+}
+
+export async function getUserTrainingsForScheduler(user_id: string) {
+  try {
+    // Fetch all enrollments for the user
+    const enrollments: EnrollmentType[] = await EnrolledTrainings.findAll({
+      where: { user_id },
+    }).then((data) => {
+      return data.map((d) => {
+        return {
+          id: d.getDataValue("id"),
+          user_id: d.getDataValue("user_id"),
+          training_id: d.getDataValue("training_id"),
+        };
+      });
+    });
+
+    // Extract training_ids from enrollments
+    const trainingIds = enrollments.map((enrollment) => enrollment.training_id);
+
+    // Fetch trainings based on the extracted IDs
+    const trainings: TrainingType[] = await Training.findAll({
+      where: {
+        id: {
+          [Op.in]: trainingIds,
+        },
+      },
+    }).then((data) => {
+      return data.map((d) => {
+        return {
+          id: d.getDataValue("id"),
+          code: d.getDataValue("code"),
+          title: d.getDataValue("title"),
+          modality: d.getDataValue("modality"),
+          currentPopulation: d.getDataValue("currentPopulation"),
+          maxPopulation: d.getDataValue("maxPopulation"),
+          instructor: d.getDataValue("instructor"),
+          status: d.getDataValue("status"),
+          url: d.getDataValue("url"),
+          image: d.getDataValue("image"),
+        };
+      });
+    });
+
+    // Fetch schedules for the trainings
+    const schedules: ScheduleType[] = await Schedule.findAll({
+      where: {
+        training_id: {
+          [Op.in]: trainingIds,
+        },
+      },
+    }).then((data) => {
+      return data.map((d) => {
+        return {
+          id: d.getDataValue("id"),
+          title: d.getDataValue("title"),
+          subtitle: d.getDataValue("subtitle"),
+          startDate: d.getDataValue("startDate"),
+          endDate: d.getDataValue("endDate"),
+          description: d.getDataValue("description"),
+          training_id: d.getDataValue("training_id"),
+        };
+      });
+    });
+
+    // Format the data for the scheduler component
+    const formattedData = trainings.map((training) => {
+      const trainingSchedules = schedules
+        .filter((schedule) => schedule.training_id === training.id)
+        .map((schedule) => {
+          return {
+            id: `${schedule.title}_${schedule.id}`,
+            startDate: new Date(schedule.startDate),
+            endDate: new Date(schedule.endDate),
+            occupancy:
+              (new Date(schedule.endDate).getTime() -
+                new Date(schedule.startDate).getTime()) /
+              1000,
+            title: schedule.title,
+            subtitle: training.code || "",
+            description: schedule.description,
+            bgColor: getBackgroundColor(
+              new Date(schedule.startDate),
+              new Date(schedule.endDate)
+            ),
+          };
+        });
+
+      return {
+        id: training.id.toString(),
+        label: {
+          icon: "",
+          title: training.title,
+          subtitle: training.code,
+        },
+        data: trainingSchedules,
+      };
+    });
+    // console.log(formattedData);
+    return formattedData;
+  } catch (error) {
+    console.error("Error fetching and formatting user trainings:", error);
+    throw error;
   }
 }
