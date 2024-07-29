@@ -19,7 +19,7 @@ export default function UserItem({ dbData }: { dbData: EmployeeFormInput[] }) {
   return (
     <>
       {dbData.map((data) => {
-        console.log(data);
+        // console.log(data);
         // const [imageSrc, setImageSrc] = useState(
         //   `/api/profile-images/${data.username}.jpg`
         // );
@@ -72,7 +72,7 @@ export default function UserItem({ dbData }: { dbData: EmployeeFormInput[] }) {
                   isIconOnly
                   variant='light'
                   onPress={() => {
-                    console.log("PROFILE BUTTON");
+                    // console.log("PROFILE BUTTON");
                     // searchParams.set("user_id", data.username);
                     router.push(
                       `./employees-list/${data.username}/profile?user_id=${data.username}`

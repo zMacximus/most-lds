@@ -1,3 +1,4 @@
+//@ts-nocheck
 "use server";
 import { DataTypes, Op } from "sequelize";
 import db from "@/lib/sequelize";

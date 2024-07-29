@@ -37,22 +37,22 @@ export default function Page() {
     );
   }
 
-  console.log(userData);
+  // console.log(user_id);
   return (
     <div className='flex flex-col border-solid border- border-black'>
       <Profile data={userData}></Profile>
       <Spacer y={5} />
-      <div className='flex flex-col py-2 px-5 w-full h-full bg-white rounded-3xl drop-shadow-md'>
+      {/* <div className='flex flex-col py-2 px-5 w-full h-full bg-white rounded-3xl drop-shadow-md'>
         <CourseDropDown props={{ key: "ongoing", title: "Ongoing Trainings" }}>
           <SmallCourse></SmallCourse>
         </CourseDropDown>
       </div>
-      <Spacer y={5} />
+      <Spacer y={5} /> */}
       <div className='flex flex-col py-2 px-5 w-full h-full bg-white rounded-3xl drop-shadow-md'>
         <CourseDropDown
           props={{ key: "completed", title: "Completed Trainings" }}
         >
-          <SmallCourse></SmallCourse>
+          <SmallCourse user_id={user_id!}></SmallCourse>
         </CourseDropDown>
       </div>
     </div>

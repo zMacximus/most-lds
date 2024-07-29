@@ -97,6 +97,15 @@ export async function getCompletedTrainings(user_id: string) {
           [Op.in]: completedTrainingIds,
         },
       },
+    }).then((data) => {
+      return data.map((d) => {
+        return {
+          id: d.getDataValue("id"),
+          title: d.getDataValue("title"),
+          code: d.getDataValue("code"),
+          image: d.getDataValue("image"),
+        };
+      });
     });
 
     return completedTrainings;
