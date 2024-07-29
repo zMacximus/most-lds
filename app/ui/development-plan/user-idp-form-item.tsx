@@ -30,7 +30,11 @@ export default async function UserIDPFormItem({
   const isAdmin = await isUserAdmin(getUserCookie()!);
 
   if (dbData.length <= 0)
-    return <h1 className='text-5xl'>ERROR 404: No Data Found</h1>;
+    return (
+      <div className='flex flex-row h-full w-full justify-center items-center'>
+        ERROR 404: Data Not Found
+      </div>
+    );
   return (
     <>
       {dbData.map(async (data) => {
