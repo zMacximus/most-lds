@@ -45,6 +45,12 @@ export const customUserSchema = z.object({
   joinDate: z.date(),
 });
 
+export type UserTrainingInput = {
+  name: string;
+  dateOfTraining: Date;
+  employee: string;
+};
+
 export type AdminFormInput = {
   // firstName: any;
   // id: number;

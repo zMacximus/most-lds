@@ -12,32 +12,35 @@ type PageProps = {
 export default function Page({ searchParams }: PageProps) {
   // populateTestData();  FOR TESTING
   return (
-    <div className='flex flex-row'>
-      <div className='md:flex flex-1 relative hidden'>
+    <div className="flex flex-row">
+      <div className="md:flex flex-1 relative hidden">
         <Image
           src={LogoSplash.src}
           height={1000}
           width={1000}
-          alt=''
-          className='w-full h-full fit overflow-hidden drop-shadow-2xl'
+          alt=""
+          className="w-full h-full fit overflow-hidden drop-shadow-2xl"
         ></Image>
       </div>
-      <div className='flex flex-col flex-1 md:flex-[0.5] h-screen justify-center items-center bg-white'>
-        <div className='flex flex-col justify-center items-center mt-10 md:mt-0'>
+      <div className="flex flex-col flex-1 md:flex-[0.5] h-screen justify-center items-center bg-white ">
+        <div className="flex flex-col justify-center items-center mt-10 md:mt-0">
           <Image
             src={mostLogo.src}
             height={1600}
             width={1600}
-            alt='MOST-BARMM LOGO'
+            alt="MOST-BARMM LOGO"
             quality={100}
-            className='h-[10em] w-[10em]'
+            className="h-[10em] w-[10em]"
           ></Image>
-          <div className='flex px-5'>
-            <h1
-              className={`${josefin.className} text-[5em] text-primary text-center`}
-            >
-              HRMIS LDS
-            </h1>
+          <div className="flex flex-col w-full h-[400px] px-5 border-solid border- border-red-500 relative">
+            <div className="flex flex-col">
+              <h1
+                className={`${josefin.className} text-[3vw] text-primary text-center`}
+              >
+                Human Resource Management Information System-Learning &
+                Development System
+              </h1>
+            </div>
           </div>
         </div>
         <LoginForm searchParams={searchParams}></LoginForm>

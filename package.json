@@ -11,7 +11,7 @@
     "@heroicons/react": "^2.1.3",
     "@internationalized/date": "^3.5.4",
     "@nextui-org/progress": "^2.0.28",
-    "@nextui-org/react": "^2.3.6",
+    "@nextui-org/react": "^2.4.6",
     "@nextui-org/system": "^2.1.2",
     "@nextui-org/theme": "^2.2.3",
     "clsx": "^2.1.1",

@@ -5,6 +5,7 @@ import { Metadata } from "next";
 import { inter, josefin, poppins } from "@/components/fonts";
 import { NextUIProvider } from "@nextui-org/react";
 import favi from "../public/favicon.ico";
+// import { NextUIProvider } from "@nextui-org/system";
 
 export const metadata: Metadata = {
   title: "HRMIS LDS",
