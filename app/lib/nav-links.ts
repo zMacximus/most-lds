@@ -33,6 +33,11 @@ export function getUserLinks(id: string) {
       icon: "BuildingLibraryIcon",
     },
     {
+      name: "Scheduler",
+      href: `/dashboard/${id}/scheduler`,
+      icon: "CalendarIcon",
+    },
+    {
       name: "Profile",
       href: `/dashboard/${id}/profile`,
       icon: "UserIcon",
@@ -63,11 +68,6 @@ export function getAdminLinks(id: string) {
       icon: "UserGroupIcon",
     },
     {
-      name: "Trainings List",
-      href: `/dashboard/${id}/admin/trainings-list`,
-      icon: "BriefcaseIcon",
-    },
-    {
       name: "Forms List",
       href: `/dashboard/${id}/admin/forms-list`,
       icon: "FolderIcon",
@@ -77,11 +77,16 @@ export function getAdminLinks(id: string) {
       href: `/dashboard/${id}/admin/e-lib`,
       icon: "BuildingLibraryIcon",
     },
-    {
-      name: "Scheduler",
-      href: `/dashboard/${id}/admin/scheduler`,
-      icon: "CalendarIcon",
-    },
+    // {
+    //   name: "Monthly Report",
+    //   href: `/dashboard/${id}/admin/monthly-report`,
+    //   icon: "BriefcaseIcon",
+    // },
+    // {
+    //   name: "Scheduler",
+    //   href: `/dashboard/${id}/admin/scheduler`,
+    //   icon: "CalendarIcon",
+    // },
   ];
 
   return ADMIN_LINKS;

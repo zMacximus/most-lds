@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import AccordionModalFormButton from "../e-lib/accordion-modal-button";
 import { UserTrainingType } from "@/lib/models/UserTraining";
 import NewUserTrainingForm from "./new-user-training-form";
+import DeleteContentForm from "../e-lib/delete-content-modal";
 
 function formatDate(date: Date): string {
   return format(date, "MM-dd-yyyy");
@@ -22,9 +23,6 @@ export default function UserTrainingItem({
   return (
     <>
       {dbData.map((data) => {
-        // console.log(
-        //   data.submissionDate + "________" + formatDate(data.submissionDate)
-        // );
         return (
           <>
             <div
@@ -42,13 +40,20 @@ export default function UserTrainingItem({
               </div>
               <div className="p-2 flex flex-1 justify-center items-center border-dashed border- border-red-600">
                 <div className="flex flex-row">
-                  <AccordionModalFormButton buttonIcon={"eye"}>
+                  <AccordionModalFormButton buttonIcon={"pencil"}>
                     <NewUserTrainingForm
                       user_id={""}
                       loadData={true}
                       dataToLoad={data}
-                      readOnly={true}
+                      readOnly={false}
                     ></NewUserTrainingForm>
+                  </AccordionModalFormButton>
+                  <AccordionModalFormButton buttonIcon={"trash"}>
+                    <DeleteContentForm
+                      content_id={data.id}
+                      user_id={""}
+                      contentType={"userTraining"}
+                    ></DeleteContentForm>
                   </AccordionModalFormButton>
                 </div>
               </div>

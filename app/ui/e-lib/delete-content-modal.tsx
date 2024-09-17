@@ -6,6 +6,7 @@ import { dropSchedule } from "@/lib/models/Schedule";
 import { dropSubTopic } from "@/lib/models/SubTopic";
 import { dropTraining } from "@/lib/models/Training";
 import { dropEmployee } from "@/lib/models/User";
+import { dropUserTraining } from "@/lib/models/UserTraining";
 import {
   newSubTopicHandler,
   validateFormInput,
@@ -40,7 +41,8 @@ export default function DeleteContentForm({
     | "user"
     | "idp"
     | "ldform"
-    | "schedule"; //expand later to work with the rest of the tables that need deletion
+    | "schedule"
+    | "userTraining"; //expand later to work with the rest of the tables that need deletion
 }) {
   const router = useRouter();
   const pathName = usePathname();
@@ -59,6 +61,7 @@ export default function DeleteContentForm({
     if (contentType === "user") await dropEmployee(user_id);
     if (contentType === "idp") await dropIDP(content_id);
     if (contentType === "schedule") await dropSchedule(content_id);
+    if (contentType === "userTraining") await dropUserTraining(content_id);
     // if (contentType === "ldform") await dropLD(content_id);
     onClose();
     router.push(pathName);
@@ -72,10 +75,10 @@ export default function DeleteContentForm({
           <ModalBody>
             <form onSubmit={(e) => handleSubmit(e, onClose)}>
               <ModalFooter>
-                <Button color='danger' variant='light' onPress={onClose}>
+                <Button color="danger" variant="light" onPress={onClose}>
                   Cancel
                 </Button>
-                <Button color='primary' type='submit'>
+                <Button color="primary" type="submit">
                   Confirm
                 </Button>
               </ModalFooter>

@@ -133,13 +133,9 @@ export default function NewUserTrainingForm({
       {(onClose) => (
         <>
           {loadData ? (
-            <ModalHeader>
-              Review Learning and Development Participation Request Form
-            </ModalHeader>
+            <ModalHeader>Edit User Training</ModalHeader>
           ) : (
-            <ModalHeader>
-              New Learning and Development Participation Request Form
-            </ModalHeader>
+            <ModalHeader>New User Training</ModalHeader>
           )}
           <ModalBody>
             <form onSubmit={(e) => handleSubmit(e, onClose)}>
@@ -162,7 +158,7 @@ export default function NewUserTrainingForm({
                   name="dateOfTraining"
                   isRequired
                   isReadOnly={readOnly}
-                  label="Date of Activity"
+                  label="Date Completed"
                   labelPlacement="outside"
                   size="md"
                   className="max-w-[200px]"

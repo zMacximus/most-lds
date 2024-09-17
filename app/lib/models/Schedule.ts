@@ -38,6 +38,10 @@ export const Schedule = db.define(
       type: DataTypes.INTEGER(),
       allowNull: false,
     },
+    scheduledBy: {
+      type: DataTypes.STRING(),
+      allowNull: false,
+    },
     // status: { type: DataTypes.INTEGER(), allowNull: false },
   },
   { freezeTableName: true }
@@ -55,6 +59,7 @@ export type ScheduleType = {
   endDate: Date;
   description: string;
   training_id: number;
+  scheduledBy: string;
   //   status: number;
 };
 
@@ -105,10 +110,42 @@ export async function getAllSchedule(): Promise<ScheduleType[]> {
           endDate: data.getDataValue("endDate"),
           description: data.getDataValue("description"),
           training_id: data.getDataValue("training_id"),
+          scheduledBy: data.getDataValue("scheduledBy"),
           // status: data.getDataValue('status'),
         }));
       }
     );
+
+    return schedules;
+  } catch (error) {
+    console.error(
+      "Something went wrong trying to access the database: ",
+      error
+    );
+    throw error; // Rethrow the error to propagate it upwards
+  }
+}
+
+export async function getAllUserSchedule(
+  user_id: string
+): Promise<ScheduleType[]> {
+  try {
+    const schedules: ScheduleType[] = await Schedule.findAll({
+      where: { scheduledBy: user_id },
+    }).then((dataArray) => {
+      return dataArray.map((data) => ({
+        id: data.getDataValue("id"),
+        title: data.getDataValue("title"),
+        // icon: data.getDataValue('icon'),
+        subtitle: data.getDataValue("subtitle"),
+        startDate: data.getDataValue("startDate"),
+        endDate: data.getDataValue("endDate"),
+        description: data.getDataValue("description"),
+        training_id: data.getDataValue("training_id"),
+        scheduledBy: data.getDataValue("scheduledBy"),
+        // status: data.getDataValue('status'),
+      }));
+    });
 
     return schedules;
   } catch (error) {
@@ -132,9 +169,9 @@ function getBackgroundColor(startDate: Date, endDate: Date): string {
 }
 
 // Function to format schedule data
-export async function formatScheduleData() {
+export async function formatScheduleData(user_id: string) {
   try {
-    const schedules = await getAllSchedule().then((data) => {
+    const schedules = await getAllUserSchedule(user_id).then((data) => {
       return data.map((d) => {
         return {
           id: d.id.toString(),
@@ -231,6 +268,7 @@ export async function getUserTrainingsForScheduler(user_id: string) {
           endDate: d.getDataValue("endDate"),
           description: d.getDataValue("description"),
           training_id: d.getDataValue("training_id"),
+          scheduledBy: d.getDataValue("scheduledBy"),
         };
       });
     });

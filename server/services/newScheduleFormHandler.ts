@@ -15,6 +15,7 @@ const formInputSchema = z.object({
   endDate: z.date(),
   description: z.string().optional(),
   training_id: z.number(),
+  scheduledBy: z.string(),
   //   status: z.number(),
 });
 
@@ -33,6 +34,7 @@ export async function newScheduleHandler(formInput: ScheduleFormInput) {
       endDate: formInput.endDate,
       description: formInput.description,
       training_id: formInput.training_id,
+      scheduledBy: formInput.scheduledBy,
       //   status: formInput.status,
     });
 

@@ -53,6 +53,7 @@ export default function NewScheduleForm({
     startDate: new Date(),
     endDate: new Date(),
     training_id: Number(),
+    scheduledBy: user_id,
   });
 
   const handleDateChange = (name: string, value: DateValue) => {
@@ -72,6 +73,7 @@ export default function NewScheduleForm({
         startDate: new Date(dataToLoad.startDate),
         endDate: new Date(dataToLoad.endDate),
         training_id: dataToLoad.training_id,
+        scheduledBy: dataToLoad.scheduledBy,
       });
     }
   }, [loadData, dataToLoad]);
@@ -119,19 +121,19 @@ export default function NewScheduleForm({
           )}
           <ModalBody>
             <form onSubmit={(e) => handleSubmit(e, onClose)}>
-              <div className='flex flex-row justify-center items-center'>
-                <Select
+              <div className="flex flex-row justify-center items-center">
+                {/* <Select
                   items={fieldData}
                   selectedKeys={inputs.title != "" ? [inputs.title] : undefined}
                   onChange={(event) =>
                     handleSelectChange(event as ChangeEvent<HTMLSelectElement>)
                   }
-                  id='title'
-                  name='title'
-                  placeholder='Select Training'
-                  label='Training Title'
-                  size='md'
-                  labelPlacement='outside'
+                  id="title"
+                  name="title"
+                  placeholder="Select Training"
+                  label="Training Title"
+                  size="md"
+                  labelPlacement="outside"
                   isRequired
                 >
                   {(item) => (
@@ -145,11 +147,22 @@ export default function NewScheduleForm({
                       {item.title}
                     </SelectItem>
                   )}
-                </Select>
+                </Select> */}
+                <Input
+                  id="title"
+                  name="title"
+                  // isRequired
+                  value={inputs.title}
+                  onChange={handleInputChange}
+                  placeholder="ex. Gender Sensitivity"
+                  label="Title of Training"
+                  size="md"
+                  labelPlacement="outside"
+                ></Input>
                 <Spacer x={4}></Spacer>
                 <DatePicker
-                  id='startDate'
-                  name='startDate'
+                  id="startDate"
+                  name="startDate"
                   isRequired
                   value={parseDate(
                     inputs.startDate.toISOString().split("T")[0]
@@ -159,14 +172,14 @@ export default function NewScheduleForm({
                     handleDateChange("startDate", date);
                   }}
                   // placeholder='ex. Gender Sensitivity Training'
-                  label='Start Date'
-                  size='md'
-                  labelPlacement='outside'
+                  label="Start Date"
+                  size="md"
+                  labelPlacement="outside"
                 ></DatePicker>
                 <Spacer x={4}></Spacer>
                 <DatePicker
-                  id='endDate'
-                  name='endDate'
+                  id="endDate"
+                  name="endDate"
                   isRequired
                   value={parseDate(inputs.endDate.toISOString().split("T")[0])}
                   onChange={(date) => {
@@ -174,9 +187,9 @@ export default function NewScheduleForm({
                     handleDateChange("endDate", date);
                   }}
                   // placeholder='ex. Course Code'
-                  label='End Date'
-                  size='md'
-                  labelPlacement='outside'
+                  label="End Date"
+                  size="md"
+                  labelPlacement="outside"
                 ></DatePicker>
                 {/* <Spacer x={4}></Spacer>
                 <Input
@@ -238,10 +251,10 @@ export default function NewScheduleForm({
                 ></DatePicker>
               </div> */}
               <ModalFooter>
-                <Button color='danger' variant='light' onPress={onClose}>
+                <Button color="danger" variant="light" onPress={onClose}>
                   Cancel
                 </Button>
-                <Button color='primary' type='submit'>
+                <Button color="primary" type="submit">
                   Submit
                 </Button>
               </ModalFooter>

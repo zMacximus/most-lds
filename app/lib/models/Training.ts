@@ -54,7 +54,7 @@ const Training = db.define(
       allowNull: false,
     },
     image: {
-      type: DataTypes.STRING(),
+      type: DataTypes.TEXT("long"),
     },
   },
   { freezeTableName: true }

@@ -82,6 +82,10 @@ export async function getAllUserTrainings(
   }
 }
 
+export async function dropUserTraining(content_id: number) {
+  UserTrainings.destroy({ where: { id: content_id } });
+}
+
 // export async function getAllAdminForms(query?: any, signName?: string) {
 //   try {
 //     let whereClause = {};

@@ -134,6 +134,7 @@ export type ScheduleFormInput = {
   description: string;
   // status: number;
   training_id: number;
+  scheduledBy: string;
 };
 
 export type SubTopicFormInput = {
