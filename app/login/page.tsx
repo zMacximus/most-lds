@@ -32,13 +32,12 @@ export default function Page({ searchParams }: PageProps) {
             quality={100}
             className="h-[10em] w-[10em]"
           ></Image>
-          <div className="flex flex-col w-full h-[400px] px-5 border-solid border- border-red-500 relative">
+          <div className="flex flex-col w-full px-5 border-solid border- border-red-500 relative">
             <div className="flex flex-col">
               <h1
                 className={`${josefin.className} text-[3vw] text-primary text-center`}
               >
-                Human Resource Management Information System-Learning &
-                Development System
+                HRMIS-Learning & Development System
               </h1>
             </div>
           </div>
