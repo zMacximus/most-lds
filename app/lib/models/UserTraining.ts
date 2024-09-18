@@ -4,6 +4,7 @@ import { DataTypes, Op } from "sequelize";
 import db from "@/lib/sequelize";
 import User from "./User";
 import { string } from "zod";
+import { UserTrainingInput } from "../definitions";
 
 const UserTrainings = db.define(
   "User_Trainings",
@@ -85,6 +86,19 @@ export async function dropUserTraining(content_id: number) {
   UserTrainings.destroy({ where: { id: content_id } });
 }
 
+export async function updateUserTraining(id: number, data: UserTrainingInput) {
+  try {
+    const updateData: UserTrainingInput = {
+      name: data.name,
+      dateOfTraining: data.dateOfTraining,
+      employee: data.employee,
+    };
+
+    await UserTrainings.update(updateData, { where: { id: id } });
+  } catch (error) {
+    console.error("Error: updating user training:", error);
+  }
+}
 // export async function getAllAdminForms(query?: any, signName?: string) {
 //   try {
 //     let whereClause = {};

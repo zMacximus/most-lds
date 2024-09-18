@@ -1,7 +1,10 @@
 "use client";
 import { AdminFormInput, UserTrainingInput } from "@/lib/definitions";
 import { AdminFormType, updateApproval } from "@/lib/models/AdminForm";
-import { UserTrainingType } from "@/lib/models/UserTraining";
+import {
+  updateUserTraining,
+  UserTrainingType,
+} from "@/lib/models/UserTraining";
 import {
   newUserTrainingFormHandler,
   validateFormInput,
@@ -116,10 +119,7 @@ export default function NewUserTrainingForm({
     if (await validateFormInput({ ...inputs })) {
       //   setIsFormValid(true);
       if (loadData) {
-        if (adminStatus) {
-          console.log(fullName);
-          await updateApproval(dataToLoad?.id!, fullName!, statusCode);
-        }
+        await updateUserTraining(dataToLoad!.id, { ...inputs });
       } else {
         await newUserTrainingFormHandler({ ...inputs });
       }
