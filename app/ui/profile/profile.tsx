@@ -1,4 +1,5 @@
-import { UserType } from "@/lib/models/User";
+"use server";
+import { findUserData, UserType } from "@/lib/models/User";
 import {
   BriefcaseIcon,
   BuildingOffice2Icon,
@@ -12,145 +13,172 @@ import {
   PhoneIcon,
   TagIcon,
 } from "@heroicons/react/24/outline";
-import { Spacer } from "@nextui-org/react";
+import { Button, Spacer } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
 import genericUser from "public/placeholder/generic-user.png";
 import placeholderMan from "public/placeholder/Placeholder-Man.jpg";
+import AccordionModalFormButton from "../e-lib/accordion-modal-button";
+import NewEmployeeForm from "../employees/new-eployee-form";
+import { getAdminCookie, getUserCookie } from "@/server/services/cookies";
+import EditPassword from "../employees/edit-password";
 
-export default function Profile({ data }: { data: UserType }) {
+export default async function Profile({ data }: { data: UserType }) {
   const src = data.image ? data.image : genericUser;
+  const user_id = getUserCookie();
+  const isAdmin = getAdminCookie();
+  const userData = await findUserData(user_id!);
   return (
-    <div className='flex flex-row'>
-      <div className='flex flex-row w-[calc(100vh*0.5)] h-auto p-5 justify-center items-center bg-white rounded-3xl drop-shadow-md'>
-        <div className='flex flex-col m-5 border-dashed border- border-red-600'>
+    <div className="flex flex-row">
+      <div className="flex flex-row w-[calc(100vh*0.5)] h-auto p-5 justify-center items-center bg-white rounded-3xl drop-shadow-md">
+        <div className="flex flex-col m-5 border-dashed border- border-red-600">
           <Image
-            className='rounded-full drop-shadow-md w-[200px] h-[200px]'
+            className="rounded-full drop-shadow-md w-[200px] h-[200px]"
             src={src}
             width={300}
             height={300}
-            alt='Profile Picture'
+            alt="Profile Picture"
           ></Image>
-          <div className='flex flex-col items-center py-3 border-dashed border- border-red-600'>
-            <p className='text-3xl text-center'>
+          <div className="flex flex-col items-center pt-3 border-dashed border- border-red-600">
+            <p className="text-3xl text-center">
               {data.lastName}, {data.firstName}
             </p>
             <Spacer y={4}></Spacer>
             <p>{data.title}</p>
             <p>{data.department}</p>
-            {/* <Link className='text-gray-400 hover:text-sky-600' href=''>
-          Edit Profile
-        </Link> */}
+            <Spacer y={4}></Spacer>
+            {/* <Link className="text-gray-400 hover:text-sky-600" href="">
+              Edit Profile
+            </Link> */}
+            {/* <Button>Edit Profile</Button> */}
+            <div className="flex flex-row items-center justify-center">
+              <AccordionModalFormButton buttonIcon={"pencil"}>
+                <NewEmployeeForm
+                  loadData={true}
+                  //@ts-ignore
+                  dataToLoad={userData!}
+                  isAdmin={isAdmin}
+                ></NewEmployeeForm>
+              </AccordionModalFormButton>
+              <AccordionModalFormButton buttonIcon={"lock"}>
+                <EditPassword
+                  user_id={user_id!}
+                  loadData={true}
+                  //@ts-ignore
+                  dataToLoad={userData!}
+                ></EditPassword>
+              </AccordionModalFormButton>
+            </div>
           </div>
         </div>
       </div>
       <Spacer x={5}></Spacer>
-      <div className='flex flex-col w-full p-7 bg-white rounded-3xl drop-shadow-md border-solid border- border-red-500'>
-        <p className='text-2xl'>About</p>
-        <div className='flex flex-row'>
-          <div className='flex flex-col justify-evenly h-full w-full p-3'>
-            <div className='flex flex-row h-[50px] w-full justify-between items-center text-xl p-3 border-solid border-1 border-gray-600'>
-              <div className='flex flex-row h-full w-full justify-start border-solid border- border-pink-300'>
+      <div className="flex flex-col w-full p-7 bg-white rounded-3xl drop-shadow-md border-solid border- border-red-500">
+        <p className="text-2xl">About</p>
+        <div className="flex flex-row">
+          <div className="flex flex-col justify-evenly h-full w-full p-3">
+            <div className="flex flex-row h-[50px] w-full justify-between items-center text-xl p-3 border-solid border-1 border-gray-600">
+              <div className="flex flex-row h-full w-full justify-start border-solid border- border-pink-300">
                 <BriefcaseIcon width={"30px"}></BriefcaseIcon>
                 <p>Title</p>
               </div>
-              <div className='flex flex-row h-full w-full justify-end border-solid border- border-blue-300'>
-                <p className='text-right text-ellipsis'>{data.title}</p>
+              <div className="flex flex-row h-full w-full justify-end border-solid border- border-blue-300">
+                <p className="text-right text-ellipsis">{data.title}</p>
               </div>
             </div>
             <Spacer y={3}></Spacer>
-            <div className='flex flex-row h-[50px] w-full justify-between items-center text-xl p-3 border-solid border-1 border-gray-600'>
-              <div className='flex flex-row h-full w-full justify-start border-solid border- border-pink-300'>
+            <div className="flex flex-row h-[50px] w-full justify-between items-center text-xl p-3 border-solid border-1 border-gray-600">
+              <div className="flex flex-row h-full w-full justify-start border-solid border- border-pink-300">
                 <CakeIcon width={"30px"}></CakeIcon>
                 <p>Birthday</p>
               </div>
-              <div className='flex flex-row h-full w-full justify-end border-solid border- border-blue-300'>
-                <p className='text-right text-ellipsis'>{data.birthDay}</p>
+              <div className="flex flex-row h-full w-full justify-end border-solid border- border-blue-300">
+                <p className="text-right text-ellipsis">{data.birthDay}</p>
               </div>
             </div>
             <Spacer y={3}></Spacer>
-            <div className='flex flex-row h-[50px] w-full justify-between items-center text-xl p-3 border-solid border-1 border-gray-600'>
-              <div className='flex flex-row h-full w-full justify-start border-solid border- border-pink-300'>
+            <div className="flex flex-row h-[50px] w-full justify-between items-center text-xl p-3 border-solid border-1 border-gray-600">
+              <div className="flex flex-row h-full w-full justify-start border-solid border- border-pink-300">
                 <EnvelopeIcon width={"30px"}></EnvelopeIcon>
                 <p>Email</p>
               </div>
-              <div className='flex flex-row h-full w-full justify-end border-solid border- border-blue-300'>
-                <p className='text-right text-ellipsis'>{data.email}</p>
+              <div className="flex flex-row h-full w-full justify-end border-solid border- border-blue-300">
+                <p className="text-right text-ellipsis">{data.email}</p>
               </div>
             </div>
             <Spacer y={3}></Spacer>
-            <div className='flex flex-row h-[50px] w-full justify-between items-center text-xl p-3 border-solid border-1 border-gray-600'>
-              <div className='flex flex-row h-full w-full justify-start border-solid border- border-pink-300'>
+            <div className="flex flex-row h-[50px] w-full justify-between items-center text-xl p-3 border-solid border-1 border-gray-600">
+              <div className="flex flex-row h-full w-full justify-start border-solid border- border-pink-300">
                 <TagIcon width={"30px"}></TagIcon>
                 <p>Employment</p>
               </div>
-              <div className='flex flex-row h-full w-full justify-end border-solid border- border-blue-300'>
-                <p className='text-right text-ellipsis'>
+              <div className="flex flex-row h-full w-full justify-end border-solid border- border-blue-300">
+                <p className="text-right text-ellipsis">
                   {data.employmentStatus}
                 </p>
               </div>
             </div>
             <Spacer y={3}></Spacer>
-            <div className='flex flex-row h-[50px] w-full justify-between items-center text-xl p-3 border-solid border-1 border-gray-600'>
-              <div className='flex flex-row h-full w-full justify-start border-solid border- border-pink-300'>
+            <div className="flex flex-row h-[50px] w-full justify-between items-center text-xl p-3 border-solid border-1 border-gray-600">
+              <div className="flex flex-row h-full w-full justify-start border-solid border- border-pink-300">
                 <MoonIcon width={"30px"}></MoonIcon>
                 <p>Religion</p>
               </div>
-              <div className='flex flex-row h-full w-full justify-end border-solid border- border-blue-300'>
-                <p className='text-right text-ellipsis'>{data.religion}</p>
+              <div className="flex flex-row h-full w-full justify-end border-solid border- border-blue-300">
+                <p className="text-right text-ellipsis">{data.religion}</p>
               </div>
             </div>
           </div>
-          <div className='flex flex-col justify-evenly h-full w-full p-3'>
-            <div className='flex flex-row h-[50px] w-full justify-between items-center text-xl p-3 border-solid border-1 border-gray-600'>
-              <div className='flex flex-row h-full w-full justify-start border-solid border- border-pink-300'>
+          <div className="flex flex-col justify-evenly h-full w-full p-3">
+            <div className="flex flex-row h-[50px] w-full justify-between items-center text-xl p-3 border-solid border-1 border-gray-600">
+              <div className="flex flex-row h-full w-full justify-start border-solid border- border-pink-300">
                 <BuildingOffice2Icon width={"30px"}></BuildingOffice2Icon>
                 <p>Department</p>
               </div>
-              <div className='flex flex-row h-full w-full justify-end border-solid border- border-blue-300'>
-                <p className='text-right text-ellipsis'>{data.department}</p>
+              <div className="flex flex-row h-full w-full justify-end border-solid border- border-blue-300">
+                <p className="text-right text-ellipsis">{data.department}</p>
               </div>
             </div>
             <Spacer y={3}></Spacer>
-            <div className='flex flex-row h-[50px] w-full justify-between items-center text-xl p-3 border-solid border-1 border-gray-600'>
-              <div className='flex flex-row h-full w-full justify-start border-solid border- border-pink-300'>
+            <div className="flex flex-row h-[50px] w-full justify-between items-center text-xl p-3 border-solid border-1 border-gray-600">
+              <div className="flex flex-row h-full w-full justify-start border-solid border- border-pink-300">
                 <HomeIcon width={"30px"}></HomeIcon>
                 <p>Address</p>
               </div>
-              <div className='flex flex-row h-full w-full justify-end border-solid border- border-blue-300'>
-                <p className='text-right text-ellipsis'>{data.address}</p>
+              <div className="flex flex-row h-full w-full justify-end border-solid border- border-blue-300">
+                <p className="text-right text-ellipsis">{data.address}</p>
               </div>
             </div>
             <Spacer y={3}></Spacer>
-            <div className='flex flex-row h-[50px] w-full justify-between items-center text-xl p-3 border-solid border-1 border-gray-600'>
-              <div className='flex flex-row h-full w-full justify-start border-solid border- border-pink-300'>
+            <div className="flex flex-row h-[50px] w-full justify-between items-center text-xl p-3 border-solid border-1 border-gray-600">
+              <div className="flex flex-row h-full w-full justify-start border-solid border- border-pink-300">
                 <PhoneIcon width={"30px"}></PhoneIcon>
                 <p>Phone</p>
               </div>
-              <div className='flex flex-row h-full w-full justify-end border-solid border- border-blue-300'>
-                <p className='text-right text-ellipsis'>
+              <div className="flex flex-row h-full w-full justify-end border-solid border- border-blue-300">
+                <p className="text-right text-ellipsis">
                   +63 {data.phoneNumber}
                 </p>
               </div>
             </div>
             <Spacer y={3}></Spacer>
-            <div className='flex flex-row h-[50px] w-full justify-between items-center text-xl p-3 border-solid border-1 border-gray-600'>
-              <div className='flex flex-row h-full w-full justify-start border-solid border- border-pink-300'>
+            <div className="flex flex-row h-[50px] w-full justify-between items-center text-xl p-3 border-solid border-1 border-gray-600">
+              <div className="flex flex-row h-full w-full justify-start border-solid border- border-pink-300">
                 <HeartIcon width={"30px"}></HeartIcon>
                 <p>Status</p>
               </div>
-              <div className='flex flex-row h-full w-full justify-end border-solid border- border-blue-300'>
-                <p className='text-right text-ellipsis'>{data.maritalStatus}</p>
+              <div className="flex flex-row h-full w-full justify-end border-solid border- border-blue-300">
+                <p className="text-right text-ellipsis">{data.maritalStatus}</p>
               </div>
             </div>
             <Spacer y={3}></Spacer>
-            <div className='flex flex-row h-[50px] w-full justify-between items-center text-xl p-3 border-solid border-1 border-gray-600'>
-              <div className='flex flex-row h-full w-full justify-start border-solid border- border-pink-300'>
+            <div className="flex flex-row h-[50px] w-full justify-between items-center text-xl p-3 border-solid border-1 border-gray-600">
+              <div className="flex flex-row h-full w-full justify-start border-solid border- border-pink-300">
                 <CalendarIcon width={"30px"}></CalendarIcon>
                 <p>Joined</p>
               </div>
-              <div className='flex flex-row h-full w-full justify-end border-solid border- border-blue-300'>
-                <p className='text-right text-ellipsis'>{data.joinDate}</p>
+              <div className="flex flex-row h-full w-full justify-end border-solid border- border-blue-300">
+                <p className="text-right text-ellipsis">{data.joinDate}</p>
               </div>
             </div>
           </div>

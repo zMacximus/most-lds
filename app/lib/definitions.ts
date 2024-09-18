@@ -51,6 +51,11 @@ export type UserTrainingInput = {
   employee: string;
 };
 
+export type UserPassword = {
+  username: string;
+  password: string;
+};
+
 export type AdminFormInput = {
   // firstName: any;
   // id: number;

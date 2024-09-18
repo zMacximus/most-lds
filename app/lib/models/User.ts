@@ -1,7 +1,8 @@
 "use server";
 import { DataTypes, Op } from "sequelize";
 import db from "@/lib/sequelize";
-import { EmployeeFormInput } from "../definitions";
+import { EmployeeFormInput, UserPassword } from "../definitions";
+import { z } from "zod";
 
 const User = db.define(
   "User",
@@ -14,7 +15,7 @@ const User = db.define(
     },
     email: {
       type: DataTypes.STRING(),
-      allowNull: false,
+      allowNull: true,
       unique: "email",
     },
     password: {
@@ -36,39 +37,39 @@ const User = db.define(
     },
     department: {
       type: DataTypes.STRING(),
-      allowNull: false,
+      allowNull: true,
     },
     title: {
       type: DataTypes.STRING(),
-      allowNull: false,
+      allowNull: true,
     },
     employmentStatus: {
       type: DataTypes.STRING(),
-      allowNull: false,
+      allowNull: true,
     },
     phoneNumber: {
       type: DataTypes.STRING(),
-      allowNull: false,
+      allowNull: true,
     },
     maritalStatus: {
       type: DataTypes.STRING(),
-      allowNull: false,
+      allowNull: true,
     },
     address: {
       type: DataTypes.STRING(),
-      allowNull: false,
+      allowNull: true,
     },
     religion: {
       type: DataTypes.STRING(),
-      allowNull: false,
+      allowNull: true,
     },
     birthDay: {
       type: DataTypes.DATEONLY(),
-      allowNull: false,
+      allowNull: true,
     },
     joinDate: {
       type: DataTypes.DATEONLY(),
-      allowNull: false,
+      allowNull: true,
     },
     image: {
       type: DataTypes.TEXT("long"),
@@ -248,5 +249,33 @@ export async function getUserFullName(
   } catch (err) {
     console.error("Error fetching user full name", err);
     return null;
+  }
+}
+
+const formInputSchema = z.object({
+  username: z.string().min(1),
+  password: z.string().min(1),
+});
+
+export async function validatePasswordFormInput(formInput: UserPassword) {
+  return formInputSchema.parse(formInput);
+}
+
+export async function editPasswordFormHandler(formInput: UserPassword) {
+  try {
+    // Validate the form data
+    // const validatedInput = formInputSchema.parse(formInput);
+
+    const user = User.update(
+      { password: formInput.password },
+      { where: { username: formInput.username } }
+    );
+
+    console.log("Password successfully updated!");
+
+    // return newUser;
+  } catch (error) {
+    console.error("Error updating password!", error);
+    // return { success: false, message: "Failed to create user", error: error.message };
   }
 }

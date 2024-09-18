@@ -2,24 +2,24 @@
 import { EmployeeFormInput } from "@/lib/definitions";
 import User from "@/lib/models/User";
 import { z } from "zod";
-// import bcrypt from "bcrypt";
+import bcrypt from "bcrypt";
 
 // Define your schema using Zod
 const formInputSchema = z.object({
   firstName: z.string().min(1),
   lastName: z.string().min(1),
-  email: z.string(),
-  password: z.string().min(1).optional(), // Optional because it might be generated/hashed later
+  email: z.string().optional(),
+  password: z.string().optional(), // Optional because it might be generated/hashed later
   admin: z.boolean(),
-  department: z.string().min(1),
-  title: z.string().min(1),
-  employmentStatus: z.string().min(1),
-  phoneNumber: z.string().min(1),
-  maritalStatus: z.string().min(1),
-  address: z.string().min(1),
-  religion: z.string().min(1),
-  birthDay: z.date(), // Assuming it's a Date object
-  joinDate: z.date(), // Assuming it's a Date object
+  department: z.string().optional(),
+  title: z.string().optional(),
+  employmentStatus: z.string().optional(),
+  phoneNumber: z.string().optional(),
+  maritalStatus: z.string().optional(),
+  address: z.string().optional(),
+  religion: z.string().optional(),
+  birthDay: z.date().optional(), // Assuming it's a Date object
+  joinDate: z.date().optional(), // Assuming it's a Date object
   image: z.any(),
 });
 
@@ -48,10 +48,12 @@ export async function newEmployeeHandler(formInput: EmployeeFormInput) {
     // const hashedPassword = await bcrypt.hash("most2024", 10);
 
     // Transform the form data to match the custom user schema
+    const hashedPassword = await bcrypt.hash("most2024", 10);
+
     const newUser = User.build({
       username: username,
       email: formInput.email, // Adjust as necessary
-      password: "most2024", // Replace with hashedPassword if bcrypt is used
+      password: hashedPassword, // Replace with hashedPassword if bcrypt is used
       admin: formInput.admin,
       firstName: formInput.firstName,
       lastName: formInput.lastName,

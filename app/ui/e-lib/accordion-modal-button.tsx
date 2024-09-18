@@ -1,6 +1,7 @@
 "use client";
 import {
   EyeIcon,
+  LockClosedIcon,
   PencilIcon,
   PlusCircleIcon,
   TrashIcon,
@@ -14,7 +15,7 @@ export default function AccordionModalFormButton({
   buttonSize,
 }: {
   children: ReactNode;
-  buttonIcon: "pencil" | "eye" | "plus" | "trash";
+  buttonIcon: "pencil" | "eye" | "plus" | "trash" | "lock";
   buttonSize?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -23,6 +24,7 @@ export default function AccordionModalFormButton({
     eye: EyeIcon,
     plus: PlusCircleIcon,
     trash: TrashIcon,
+    lock: LockClosedIcon,
   };
 
   const IconButton = icons[buttonIcon];
@@ -31,14 +33,14 @@ export default function AccordionModalFormButton({
       {buttonIcon === "trash" ? (
         <Button
           onPress={onOpen}
-          size='md'
+          size="md"
           isIconOnly
-          color='danger'
-          variant='light'
+          color="danger"
+          variant="light"
           //   value={data.title}
           // onPress={(e) => console.log(e.target.value)}
         >
-          <div className='flex flex-row justify-center items-center max-h-[2em] max-w-[100em]'>
+          <div className="flex flex-row justify-center items-center max-h-[2em] max-w-[100em]">
             <IconButton width={"25px"}></IconButton>
             {/* <span className='text-nowrap text-white pr-2.5'>{buttonName}</span> */}
           </div>
@@ -46,13 +48,13 @@ export default function AccordionModalFormButton({
       ) : (
         <Button
           onPress={onOpen}
-          size='md'
+          size="md"
           isIconOnly
-          variant='light'
+          variant="light"
           //   value={data.title}
           // onPress={(e) => console.log(e.target.value)}
         >
-          <div className='flex flex-row justify-center items-center max-h-[2em] max-w-[100em]'>
+          <div className="flex flex-row justify-center items-center max-h-[2em] max-w-[100em]">
             <IconButton width={"25px"}></IconButton>
             {/* <span className='text-nowrap text-white pr-2.5'>{buttonName}</span> */}
           </div>
@@ -64,8 +66,8 @@ export default function AccordionModalFormButton({
         size={buttonSize ? buttonSize : "5xl"}
         isKeyboardDismissDisabled={true}
         isDismissable={false}
-        backdrop='blur'
-        scrollBehavior='outside'
+        backdrop="blur"
+        scrollBehavior="outside"
       >
         {children}
       </Modal>

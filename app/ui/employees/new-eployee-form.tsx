@@ -27,9 +27,11 @@ import { ChangeEvent, FormEvent, Key, useEffect, useState } from "react";
 export default function NewEmployeeForm({
   loadData,
   dataToLoad,
+  isAdmin,
 }: {
   loadData?: boolean;
   dataToLoad?: EmployeeFormInput;
+  isAdmin?: boolean;
 }) {
   const router = useRouter();
   const pathName = usePathname();
@@ -43,7 +45,8 @@ export default function NewEmployeeForm({
     firstName: "",
     lastName: "",
     email: "", // New field
-    birthDay: birthday?.toDate(getLocalTimeZone())!,
+    // birthDay: birthday?.toDate(getLocalTimeZone())!,
+    birthDay: new Date(),
     address: "",
     religion: "",
     department: "",
@@ -52,7 +55,8 @@ export default function NewEmployeeForm({
     phoneNumber: "", // New field
     maritalStatus: "", // New field
     admin: false,
-    joinDate: joinDate?.toDate(getLocalTimeZone())!,
+    // joinDate: joinDate?.toDate(getLocalTimeZone())!,
+    joinDate: new Date(),
     //@ts-ignore
     image: null,
   });
@@ -191,78 +195,78 @@ export default function NewEmployeeForm({
           )}
           <ModalBody>
             <form onSubmit={(e) => handleSubmit(e, onClose)}>
-              <div className='flex flex-row justify-center items-center'>
-                <div className='flex flex-col flex-shrink border-soli border- border-black'>
-                  <label className='mb-4 text-sm'>Profile Picture</label>
+              <div className="flex flex-row justify-center items-center">
+                <div className="flex flex-col flex-shrink border-soli border- border-black">
+                  <label className="mb-4 text-sm">Profile Picture</label>
                   <input
-                    id='profileImage'
-                    type='file'
-                    name='file'
+                    id="profileImage"
+                    type="file"
+                    name="file"
                     //@ts-ignore
                     onChange={handleProfileImageChange}
                   />
                 </div>
                 <Spacer x={4}></Spacer>
                 <Input
-                  id='firstName'
-                  name='firstName'
+                  id="firstName"
+                  name="firstName"
                   isRequired
                   value={inputs.firstName}
                   onChange={handleInputChange}
-                  placeholder='ex. Juan'
-                  label='First Name'
-                  size='md'
-                  labelPlacement='outside'
+                  placeholder="ex. Juan"
+                  label="First Name"
+                  size="md"
+                  labelPlacement="outside"
                 ></Input>
                 <Spacer x={4}></Spacer>
                 <Input
-                  id='lastName'
-                  name='lastName'
+                  id="lastName"
+                  name="lastName"
                   isRequired
                   value={inputs.lastName}
                   onChange={handleInputChange}
-                  placeholder='ex. de la Cruz'
-                  label='Last Name'
-                  size='md'
-                  labelPlacement='outside'
+                  placeholder="ex. de la Cruz"
+                  label="Last Name"
+                  size="md"
+                  labelPlacement="outside"
                 ></Input>
               </div>
-              <div className='flex flex-row justify-center items-center mt-5'>
+              <div className="flex flex-row justify-center items-center mt-5">
                 <Input
-                  id='email'
-                  name='email'
-                  isRequired
+                  id="email"
+                  name="email"
+                  // isRequired
                   value={inputs.email}
                   onChange={handleInputChange}
-                  placeholder='ex. juandelacruz123@gmail.com'
-                  label='Email'
-                  size='md'
-                  labelPlacement='outside'
+                  placeholder="ex. juandelacruz123@gmail.com"
+                  label="Email"
+                  size="md"
+                  labelPlacement="outside"
                 ></Input>
                 <Spacer x={4}></Spacer>
                 <Input
-                  id='phoneNumber'
-                  name='phoneNumber'
-                  isRequired
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  // isRequired
                   value={inputs.phoneNumber}
                   onChange={handleInputChange}
-                  placeholder='ex. 915-xxx-xxxx'
-                  label='Phone Number'
-                  size='md'
-                  labelPlacement='outside'
-                  startContent={<p className='text-gray-700'>+63</p>}
+                  placeholder="ex. 915-xxx-xxxx"
+                  label="Phone Number"
+                  size="md"
+                  labelPlacement="outside"
+                  startContent={<p className="text-gray-700">+63</p>}
                 ></Input>
               </div>
-              <div className='flex flex-row justify-center items-center mt-5'>
+              <div className="flex flex-row justify-center items-center mt-5">
                 <DatePicker
-                  id='birthDay'
-                  name='birthDay'
-                  isRequired
-                  label='Birthday'
+                  id="birthDay"
+                  name="birthDay"
+                  // isRequired
+                  label="Birthday"
                   showMonthAndYearPickers
-                  labelPlacement='outside'
-                  size='md'
-                  className='max-w-[250px]'
+                  labelPlacement="outside"
+                  size="md"
+                  className="max-w-[250px]"
                   value={birthday}
                   onChange={(date) => {
                     setBirthDay(date);
@@ -271,26 +275,26 @@ export default function NewEmployeeForm({
                 ></DatePicker>
                 <Spacer x={4}></Spacer>
                 <Input
-                  id='address'
-                  name='address'
-                  isRequired
+                  id="address"
+                  name="address"
+                  // isRequired
                   value={inputs.address}
                   onChange={handleInputChange}
-                  placeholder='ex. 123 Di Makita St., Not Real City'
-                  label='Address'
-                  size='md'
-                  labelPlacement='outside'
+                  placeholder="ex. 123 Di Makita St., Not Real City"
+                  label="Address"
+                  size="md"
+                  labelPlacement="outside"
                 ></Input>
               </div>
-              <div className='flex flex-row justify-center items-center mt-5'>
+              <div className="flex flex-row justify-center items-center mt-5">
                 <Select
-                  id='department'
-                  name='department'
-                  isRequired
-                  label='Department'
-                  size='md'
-                  labelPlacement='outside'
-                  placeholder='ex. Operations'
+                  id="department"
+                  name="department"
+                  // isRequired
+                  label="Department"
+                  size="md"
+                  labelPlacement="outside"
+                  placeholder="ex. Operations"
                   selectedKeys={new Set([inputs.department])}
                   onSelectionChange={(keys) =>
                     handleSelectChange("department", keys)
@@ -304,25 +308,25 @@ export default function NewEmployeeForm({
                 </Select>
                 <Spacer x={4}></Spacer>
                 <Input
-                  id='title'
-                  name='title'
-                  isRequired
+                  id="title"
+                  name="title"
+                  // isRequired
                   value={inputs.title}
                   onChange={handleInputChange}
-                  placeholder='ex. Supervisor'
-                  label='Title'
-                  size='md'
-                  labelPlacement='outside'
+                  placeholder="ex. Supervisor"
+                  label="Title"
+                  size="md"
+                  labelPlacement="outside"
                 ></Input>
                 <Spacer x={4}></Spacer>
                 <Select
-                  id='employmentStatus'
-                  name='employmentStatus'
-                  isRequired
-                  label='Employment Status'
-                  size='md'
-                  labelPlacement='outside'
-                  placeholder='ex. Permanent'
+                  id="employmentStatus"
+                  name="employmentStatus"
+                  // isRequired
+                  label="Employment Status"
+                  size="md"
+                  labelPlacement="outside"
+                  placeholder="ex. Permanent"
                   selectedKeys={new Set([inputs.employmentStatus])}
                   onSelectionChange={(keys) =>
                     handleSelectChange("employmentStatus", keys)
@@ -335,15 +339,15 @@ export default function NewEmployeeForm({
                   <SelectItem key={"Voluntary"}>Voluntary</SelectItem>
                 </Select>
               </div>
-              <div className='flex flex-row justify-start items-center mt-5'>
+              <div className="flex flex-row justify-start items-center mt-5">
                 <Select
-                  id='maritalStatus'
-                  name='maritalStatus'
-                  isRequired
-                  label='Marital Status'
-                  size='md'
-                  labelPlacement='outside'
-                  placeholder='ex. Married'
+                  id="maritalStatus"
+                  name="maritalStatus"
+                  // isRequired
+                  label="Marital Status"
+                  size="md"
+                  labelPlacement="outside"
+                  placeholder="ex. Married"
                   selectedKeys={new Set([inputs.maritalStatus])}
                   onSelectionChange={(keys) =>
                     handleSelectChange("maritalStatus", keys)
@@ -356,13 +360,13 @@ export default function NewEmployeeForm({
                 </Select>
                 <Spacer x={4}></Spacer>
                 <Select
-                  id='religion'
-                  name='religion'
-                  isRequired
-                  label='Religion'
-                  size='md'
-                  labelPlacement='outside'
-                  placeholder='ex. Islam'
+                  id="religion"
+                  name="religion"
+                  // isRequired
+                  label="Religion"
+                  size="md"
+                  labelPlacement="outside"
+                  placeholder="ex. Islam"
                   selectedKeys={new Set([inputs.religion])}
                   onSelectionChange={(keys) =>
                     handleSelectChange("religion", keys)
@@ -375,40 +379,46 @@ export default function NewEmployeeForm({
                 </Select>
                 <Spacer x={4}></Spacer>
                 <DatePicker
-                  id='joinDate'
-                  name='joinDate'
-                  isRequired
+                  id="joinDate"
+                  name="joinDate"
+                  // isRequired
                   showMonthAndYearPickers
-                  label='Join Date'
-                  labelPlacement='outside'
-                  size='md'
-                  className='max-w-[250px]'
+                  label="Join Date"
+                  labelPlacement="outside"
+                  size="md"
+                  className="max-w-[250px]"
                   value={joinDate}
                   onChange={(date) => {
                     setJoinDate(date);
                     handleDateChange("joinDate", date);
                   }}
                 ></DatePicker>
-                <Spacer x={4}></Spacer>
-                <div className='mt-5'>
-                  <p className='mr-2'>Admin Authority</p>
-                </div>
-                <div className='mt-6'>
-                  <Switch
-                    id='admin'
-                    name='admin'
-                    size='lg'
-                    isSelected={inputs.admin}
-                    checked={inputs.admin}
-                    onChange={handleSwitchChange}
-                  />
-                </div>
+                {isAdmin ? (
+                  <>
+                    <Spacer x={4}></Spacer>
+                    <div className="mt-5">
+                      <p className="mr-2">Admin Authority</p>
+                    </div>
+                    <div className="mt-6">
+                      <Switch
+                        id="admin"
+                        name="admin"
+                        size="lg"
+                        isSelected={inputs.admin}
+                        checked={inputs.admin}
+                        onChange={handleSwitchChange}
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <></>
+                )}
               </div>
               <ModalFooter>
-                <Button color='danger' variant='light' onPress={onClose}>
+                <Button color="danger" variant="light" onPress={onClose}>
                   Cancel
                 </Button>
-                <Button color='primary' type='submit'>
+                <Button color="primary" type="submit">
                   Submit
                 </Button>
               </ModalFooter>

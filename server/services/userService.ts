@@ -6,6 +6,8 @@ import { z } from "zod";
 import { adminCookie, authCookie, userCookie } from "./cookies";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { UserPassword } from "@/lib/definitions";
+import bcrypt from "bcrypt";
 
 export const userService = {
   authenticate,
@@ -22,17 +24,35 @@ async function matchCreds(username: string, password: string) {
         },
       },
     });
-    if (password !== user?.getDataValue("password")) return null;
+
+    if (!user) {
+      // If user doesn't exist, return null
+      console.error("User not found");
+      return null;
+    }
+
+    const hashedPassword = user.getDataValue("password"); // Get the stored hashed password
+
+    // Compare the provided plain password with the hashed password in the database
+    const isMatch = await bcrypt.compare(password, hashedPassword);
+
+    if (!isMatch) {
+      // If the passwords don't match, return null
+      console.error("Passwords don't match");
+      return null;
+    }
+
+    // If passwords match, set the cookies and return user info
     userCookie(username);
     adminCookie(user.getDataValue("admin"));
 
     return {
-      username: user?.getDataValue("username"),
-      firstName: user?.getDataValue("firstName"),
-      lastName: user?.getDataValue("lastName"),
+      username: user.getDataValue("username"),
+      firstName: user.getDataValue("firstName"),
+      lastName: user.getDataValue("lastName"),
     };
   } catch (err) {
-    console.error("INVALID CREDS", err);
+    console.error("Error authenticating user:", err);
     return null;
   }
 }
