@@ -127,23 +127,32 @@ export async function getAllSchedule(): Promise<ScheduleType[]> {
 }
 
 export async function getAllUserSchedule(
-  user_id: string
+  user_id: string,
+  query?: string
 ): Promise<ScheduleType[]> {
   try {
+    const whereCondition: any = { scheduledBy: user_id };
+
+    // If a query is provided, add a condition for the title
+    if (query) {
+      whereCondition.title = {
+        [Op.like]: `%${query}%`, // Use Sequelize's Op.like for partial matching
+      };
+    }
+
     const schedules: ScheduleType[] = await Schedule.findAll({
-      where: { scheduledBy: user_id },
+      where: whereCondition,
+      order: [["startDate", "DESC"]],
     }).then((dataArray) => {
       return dataArray.map((data) => ({
         id: data.getDataValue("id"),
         title: data.getDataValue("title"),
-        // icon: data.getDataValue('icon'),
         subtitle: data.getDataValue("subtitle"),
         startDate: data.getDataValue("startDate"),
         endDate: data.getDataValue("endDate"),
         description: data.getDataValue("description"),
         training_id: data.getDataValue("training_id"),
         scheduledBy: data.getDataValue("scheduledBy"),
-        // status: data.getDataValue('status'),
       }));
     });
 

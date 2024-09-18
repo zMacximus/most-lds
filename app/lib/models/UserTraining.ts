@@ -33,18 +33,6 @@ const UserTrainings = db.define(
 
 UserTrainings.sync();
 
-// AdminForm.hasOne(User, {
-//   foreignKey: {
-//     name: "submittedBy",
-//     allowNull: false,
-//   },
-// });
-// User.hasOne(AdminForm);
-
-// AdminForm.sync();
-// db.sync({ alter: true, force: true });
-// db.sync();
-
 export default UserTrainings;
 
 export type UserTrainingType = {
@@ -56,18 +44,29 @@ export type UserTrainingType = {
 };
 
 export async function getAllUserTrainings(
-  user_id: string
+  user_id: string,
+  query?: string
 ): Promise<UserTrainingType[]> {
   try {
-    // Find all forms submitted by the given user_id
+    // Define the base condition for filtering by user_id
+    const whereCondition: any = {
+      employee: user_id,
+    };
+
+    // If a query is provided, add a condition to search by training name
+    if (query) {
+      whereCondition.name = {
+        [Op.like]: `%${query}%`, // Case-insensitive partial match for the name
+      };
+    }
+
+    // Find all trainings that match the user_id and (optionally) the name query
     const trainings = await UserTrainings.findAll({
-      where: {
-        employee: user_id,
-      },
-      // order: [["submissionDate", "DESC"]],
+      where: whereCondition,
+      order: [["dateOfTraining", "DESC"]], // Sort by dateOfTraining, descending
     });
 
-    // Map the results to a format that matches AdminFormType
+    // Map the results to a format that matches UserTrainingType
     const userTrainings = trainings.map((training) => ({
       id: training.id,
       name: training.name,
@@ -77,7 +76,7 @@ export async function getAllUserTrainings(
 
     return userTrainings;
   } catch (error) {
-    console.error("Error fetching user Trainings:", error);
+    console.error("Error fetching user trainings:", error);
     return [];
   }
 }

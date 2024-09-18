@@ -58,7 +58,7 @@ export default async function Page({
   // Fetch data if user cookie is available
   let dbData: UserTrainingType[] = [];
   if (userCookie) {
-    dbData = await getAllUserTrainings(userCookie);
+    dbData = await getAllUserTrainings(userCookie, query);
   }
 
   function getDataForPage(pageNumber: number, data: UserTrainingType[]) {

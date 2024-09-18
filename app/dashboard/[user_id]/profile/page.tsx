@@ -30,7 +30,7 @@ export default async function Page({
     ? await findUserData(userCookie)
     : null;
   const userTrainingData: UserTrainingType[] | null = userCookie
-    ? await getAllUserTrainings(userCookie)
+    ? await getAllUserTrainings(userCookie, query)
     : null;
 
   function getDataForPage(pageNumber: number, data: UserTrainingType[]) {

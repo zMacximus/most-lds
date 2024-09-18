@@ -9,6 +9,7 @@ import {
   formatScheduleData,
   getAllSchedule,
   getAllUserSchedule,
+  ScheduleType,
 } from "@/lib/models/Schedule";
 import { getAllTrainings } from "@/lib/models/Training";
 import { getUserCookie } from "@/server/services/cookies";
@@ -19,21 +20,36 @@ import { Suspense } from "react";
 // import { Scheduler } from "@bitnoi.se/react-scheduler"
 // import { ADMIN_SCHEDULER } from "lib/mock_data"
 
-export default async function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string;
+    page?: string;
+  };
+}) {
+  const query = searchParams?.query || "";
+  const currentPage = Number(searchParams?.page) || 1;
   const headers = ["Training", "Start Date", "End Date", "Actions"];
 
   const user_id = getUserCookie();
 
-  const dbData = await getAllUserSchedule(user_id!);
+  const dbData = await getAllUserSchedule(user_id!, query);
   const fieldData = await getAllTrainings();
   const schedulerData = await formatScheduleData(user_id!);
+
+  function getDataForPage(pageNumber: number, data: ScheduleType[]) {
+    const startIndex = (pageNumber - 1) * 5;
+    const endIndex = startIndex + 5;
+    return data.slice(startIndex, endIndex);
+  }
 
   return (
     <div>
       <ScheduleTable
         tableHeaders={headers}
-        dbData={dbData}
-        currentPage={0}
+        dbData={getDataForPage(currentPage, dbData)}
+        currentPage={currentPage}
         fieldData={fieldData!}
       >
         <SchedulerItem dbData={dbData} fieldData={fieldData!}></SchedulerItem>

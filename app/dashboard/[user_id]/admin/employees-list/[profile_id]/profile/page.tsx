@@ -17,13 +17,13 @@ export default async function Page({
     user_id?: string;
   };
 }) {
-  const user_id = searchParams?.user_id || "";
-  const query = searchParams?.query || "";
+  const user_id = searchParams?.user_id;
+  const query = searchParams?.query;
   const currentPage = Number(searchParams?.page) || 1;
 
   // Fetch user training data only if user_id is provided
   const userTrainingData: UserTrainingType[] | null = user_id
-    ? await getAllUserTrainings(user_id)
+    ? await getAllUserTrainings(user_id, query)
     : null;
 
   // Helper function to handle pagination logic

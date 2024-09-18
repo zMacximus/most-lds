@@ -1,4 +1,4 @@
-"use server";
+"use client";
 import { findUserData, UserType } from "@/lib/models/User";
 import {
   BriefcaseIcon,
@@ -23,11 +23,11 @@ import NewEmployeeForm from "../employees/new-eployee-form";
 import { getAdminCookie, getUserCookie } from "@/server/services/cookies";
 import EditPassword from "../employees/edit-password";
 
-export default async function Profile({ data }: { data: UserType }) {
+export default function ClientProfile({ data }: { data: UserType }) {
   const src = data.image ? data.image : genericUser;
-  const user_id = getUserCookie();
-  const isAdmin = getAdminCookie();
-  const userData = await findUserData(user_id!);
+  //   const user_id = getUserCookie();
+  //   const isAdmin = getAdminCookie();
+  //   const userData = await findUserData(user_id!);
   return (
     <div className="flex flex-row">
       <div className="flex flex-row w-[calc(100vh*0.5)] h-auto p-5 justify-center items-center bg-white rounded-3xl drop-shadow-md">
@@ -46,12 +46,12 @@ export default async function Profile({ data }: { data: UserType }) {
             <Spacer y={4}></Spacer>
             <p>{data.title}</p>
             <p>{data.department}</p>
-            <Spacer y={4}></Spacer>
+            {/* <Spacer y={4}></Spacer> */}
             {/* <Link className="text-gray-400 hover:text-sky-600" href="">
               Edit Profile
             </Link> */}
             {/* <Button>Edit Profile</Button> */}
-            <div className="flex flex-row items-center justify-center">
+            {/* <div className="flex flex-row items-center justify-center">
               <AccordionModalFormButton buttonIcon={"pencil"}>
                 <NewEmployeeForm
                   loadData={true}
@@ -69,7 +69,7 @@ export default async function Profile({ data }: { data: UserType }) {
                   dataToLoad={userData!}
                 ></EditPassword>
               </AccordionModalFormButton>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
